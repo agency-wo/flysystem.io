@@ -1021,12 +1021,11 @@
   .cat-card__actions {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
-    margin-top: 10px;
-  }
-
-  .cat-card__actions .btn {
-    padding: 11px 20px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
   }
 
   /* ---- form ---- */
@@ -1726,6 +1725,26 @@
     padding-bottom: 0;
   }
 
+  .page-hero .dim {
+    margin-top: 32px;
+  }
+
+  .page-hero--grid {
+    position: relative;
+  }
+
+  .page-hero--grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(color-mix(in srgb, #141b2b 5%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, #141b2b 5%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(130% 100% at 50% 0%, #000 35%, transparent 80%);
+    pointer-events: none;
+  }
+
   .jump {
     display: flex;
     flex-wrap: wrap;
@@ -1761,42 +1780,56 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* ---- griglia cataloghi ---- */
+  /* ---- capitoli cataloghi (binario sinistro + scaffale) ---- */
 
   .cat-section {
-    padding-block: clamp(40px, 6vw, 72px);
+    padding-block: clamp(48px, 7vw, 88px);
   }
 
   .cat-section + .cat-section {
     border-top: 1px solid var(--rule);
   }
 
-  .cat-section__head {
-    display: flex;
-    align-items: center;
-    gap: clamp(18px, 3vw, 32px);
-    margin-bottom: clamp(28px, 4vw, 48px);
+  .cat-chapter {
+    display: grid;
+    grid-template-columns: minmax(210px, 4fr) minmax(0, 8fr);
+    gap: clamp(32px, 5vw, 88px);
+    align-items: start;
   }
 
-  .cat-section__head .head-line {
-    flex: 1 1 0;
-    block-size: 9px;
-    background: linear-gradient(var(--rule-strong), var(--rule-strong)) 50% 50% / 100% 1px no-repeat;
-    border-inline: 1px solid var(--rule-strong);
+  .cat-rail {
+    position: sticky;
+    top: 104px;
+    display: grid;
+    gap: 16px;
   }
 
-  .cat-section__head .h2 {
+  .cat-rail .h2 {
     font-size: clamp(1.75rem, 3.2vw, 2.5rem);
   }
 
-  .cat-section__head .fine {
-    font-variant-numeric: tabular-nums;
+  .cat-rail .dim {
+    max-width: 220px;
+  }
+
+  .cat-rail > p:not(.dim) {
+    color: var(--fg-soft);
+    max-width: 20em;
+    line-height: 1.6;
   }
 
   .cat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
     gap: clamp(28px, 4vw, 48px);
+  }
+
+  .cat-card__num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
   }
 
   /* ---- fascia CTA (editoriale, con arco "bolla" a destra) ---- */
@@ -2168,6 +2201,15 @@
     .contact-grid {
       grid-template-columns: 1fr;
       gap: 56px;
+    }
+
+    .cat-chapter {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .cat-rail {
+      position: static;
     }
   }
 
