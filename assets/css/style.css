@@ -561,9 +561,8 @@
 
   .brand__logo {
     display: block;
-    block-size: 30px;
+    block-size: 34px;
     inline-size: auto;
-    mix-blend-mode: multiply;
     margin-bottom: 3px;
   }
 
