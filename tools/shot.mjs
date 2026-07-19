@@ -33,6 +33,8 @@ await page.evaluate(async () => {
   window.scrollTo(0, 0);
 });
 await page.waitForLoadState("networkidle");
+// ensure every image is decoded before capture (large below-fold AVIFs race the screenshot)
+await page.evaluate(() => Promise.all([...document.images].map((i) => i.decode().catch(() => {}))));
 await page.waitForTimeout(400);
 if (menu) {
   await page.click(".nav-toggle");

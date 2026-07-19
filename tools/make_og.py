@@ -15,7 +15,7 @@ def main(hero_p: Path, logo_p: Path, font_p: Path, out: Path):
 
     # photo right, cover-cropped
     hero = Image.open(hero_p).convert("RGB")
-    hero = hero.crop((0, 0, int(0.775 * hero.width), int(0.79 * hero.height)))
+    hero = hero.crop((int(0.033 * hero.width), 0, int(0.775 * hero.width), int(0.79 * hero.height)))
     target_w, target_h = W - PANEL, H
     scale = max(target_w / hero.width, target_h / hero.height)
     hero = hero.resize((int(hero.width * scale), int(hero.height * scale)), Image.LANCZOS)
