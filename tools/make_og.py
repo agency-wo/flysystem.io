@@ -13,9 +13,8 @@ def main(hero_p: Path, logo_p: Path, font_p: Path, out: Path):
     W, H, PANEL = 1200, 630, 470
     canvas = Image.new("RGB", (W, H), PAPER)
 
-    # photo right, cover-cropped
+    # photo right, cover-cropped (generic cover: works for any source aspect)
     hero = Image.open(hero_p).convert("RGB")
-    hero = hero.crop((int(0.033 * hero.width), 0, int(0.775 * hero.width), int(0.79 * hero.height)))
     target_w, target_h = W - PANEL, H
     scale = max(target_w / hero.width, target_h / hero.height)
     hero = hero.resize((int(hero.width * scale), int(hero.height * scale)), Image.LANCZOS)

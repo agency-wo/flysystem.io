@@ -1266,6 +1266,7 @@
     inline-size: 100%;
     block-size: clamp(380px, 74vh, 780px);
     object-fit: cover;
+    object-position: center 42%;
   }
 
   .hero-band .fig {
@@ -1868,6 +1869,12 @@
   }
 
   @media (max-width: 640px) {
+    /* ritmo verticale piu compatto sui telefoni */
+    :root {
+      --sect: clamp(60px, 13vw, 88px);
+      --sect-s: clamp(44px, 9vw, 64px);
+    }
+
     .prof-grid {
       grid-template-columns: 1fr;
     }
@@ -1882,10 +1889,19 @@
       gap: 8px 16px;
     }
 
+    /* fasce fotografiche piu contenute: i contenuti sotto la piega si intravedono */
+    .hero-band img {
+      block-size: clamp(300px, 56vh, 460px);
+    }
+
+    .photo-band img {
+      block-size: clamp(240px, 46vh, 400px);
+    }
+
     .facts {
-      grid-template-columns: 1fr;
-      gap: 18px;
-      padding-block: 32px;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px 24px;
+      padding-block: 28px;
     }
 
     .contact-form .row-2 {
@@ -1895,6 +1911,13 @@
     .spec-block > div {
       grid-template-columns: 1fr;
       gap: 6px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    /* schermi molto stretti: nascondi la micro-riga sotto il logo per non affollare l'header */
+    .brand__tag {
+      display: none;
     }
   }
 }
