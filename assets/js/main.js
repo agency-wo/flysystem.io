@@ -99,6 +99,27 @@
     });
   }
 
+  /* ---- Video loop: play solo in viewport, mai con reduced-motion ---- */
+  var loops = document.querySelectorAll("video[data-loop]");
+  if (loops.length && !reduce && "IntersectionObserver" in window) {
+    var vio = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          var v = entry.target;
+          if (entry.isIntersecting) {
+            v.play().catch(function () {});
+          } else {
+            v.pause();
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+    loops.forEach(function (v) {
+      vio.observe(v);
+    });
+  }
+
   /* ---- Form: validazione + preselezione ?oggetto= ---- */
   var form = document.querySelector("form[data-validate]");
   if (form) {

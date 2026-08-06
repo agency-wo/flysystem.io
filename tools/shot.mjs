@@ -16,9 +16,12 @@ const url = /^https?:|^file:/.test(target) ? target : pathToFileURL(resolve(targ
 const browser = await chromium.launch({ channel: "msedge", headless: true });
 const page = await browser.newPage({
   viewport: { width: Number(w), height: Number(h) },
-  deviceScaleFactor: 1.5,
+  // fullPage: dsf 1, else tall pages exceed the 16384px raster limit and tiles wrap/duplicate
+  deviceScaleFactor: full ? 1 : 1.5,
 });
 await page.goto(url, { waitUntil: "networkidle" });
+// smooth scrolling breaks stitched fullPage captures (tiles grabbed mid-scroll -> duplicated content)
+await page.addStyleTag({ content: "html { scroll-behavior: auto !important }" });
 await page.evaluate(() => document.fonts.ready);
 // force lazy images + let reveal animations settle
 await page.evaluate(() => {
@@ -40,7 +43,9 @@ if (menu) {
   await page.click(".nav-toggle");
   await page.waitForTimeout(600);
 }
-await page.screenshot({ path: out, fullPage: full === "--full" });
+// animations: 'disabled' freezes scroll-driven (view-timeline) animations that
+// otherwise smear/duplicate content during full-page stitched capture
+await page.screenshot({ path: out, fullPage: full === "--full", animations: "disabled" });
 // report layout health
 const overflow = await page.evaluate(() => {
   const doc = document.documentElement;

@@ -1,0 +1,34 @@
+{
+  "text_rules": [
+    {"needle": "materika", "replace_with": "MATERIA", "pages": [4, 5]},
+    {"needle": "materika", "replace_with": "Materia", "whole_line": true, "pages": [58, 59, 61]},
+    {"needle": "(qui di seguito “il/i PRODOTTI”) a cui sia parte la RIKREO srl",
+     "replace_with": "(\"il/i PRODOTTI\") a cui sia parte Fly System Srls",
+     "whole_line": true, "pages": [105]},
+    {"needle": "“PRODUCTS”) in which RIKREO srl (the MANUFACTURER) is one of the parties.",
+     "replace_with": "\"PRODUCTS\") in which Fly System Srls (the MANUFACTURER) is a party.",
+     "whole_line": true, "pages": [105]}
+  ],
+  "patches": [
+    {"page": 59, "rect": [188, 13, 400, 50.6], "bg": [255, 255, 255],
+     "text": {"lines": ["MATERIA"], "size": 21, "color": [242, 101, 34], "font": "hebo",
+              "rect": [188, 16, 363, 52.5], "align": "center"}},
+    {"page": 61, "rect": [188, 13, 400, 50.6], "bg": [255, 255, 255],
+     "text": {"lines": ["MATERIA"], "size": 21, "color": [242, 101, 34], "font": "hebo",
+              "rect": [188, 16, 363, 52.5], "align": "center"}},
+    {"page": 1, "rect": [0, 0, 152, 841.89], "bg": [241, 101, 33],
+     "logo": "white", "logo_rect": [28, 269, 124, 572.9], "logo_rotate": 270},
+    {"page": 108, "rect": [22, 695, 335, 835], "bg": [241, 101, 33],
+     "logo": "white", "logo_rect": [28, 706, 123, 736]},
+    {"page": 108, "rect": [26, 744, 335, 764], "bg": [241, 101, 33],
+     "text": {"lines": ["FLY SYSTEM SRLS"], "size": 9, "color": [255, 255, 255], "font": "hebo",
+              "rect": [28, 746, 335, 762], "align": "left"}},
+    {"page": 108, "rect": [26, 764, 335, 806], "bg": [241, 101, 33],
+     "text": {"lines": ["Via Arti e Mestieri 3, 47838 Riccione RN",
+                        "T +39 0541 011058 · info@flysystemrn.it",
+                        "www.flysystemrn.com"],
+              "size": 7, "color": [255, 255, 255],
+              "rect": [28, 766, 335, 804], "align": "left"}}
+  ],
+  "shrink": {"dpi_threshold": 130, "dpi": 120, "quality": 75}
+}
