@@ -1,3 +1,6 @@
+# materiali sorgente del cliente (mai pubblicati)
+/_sorgenti/
+
 # dipendenze e artefatti degli script di sviluppo
 tools/node_modules/
 tools/package-lock.json
