@@ -31,9 +31,13 @@ _sorgenti/            Materiali sorgente del cliente (in .gitignore, mai pubblic
 ## Anteprima locale
 
 ```
-python -m http.server 8000
-# oppure: npx serve .
+npx serve .
 ```
+
+> Serve un server che supporti le richieste HTTP Range. **`python -m http.server` non le supporta**
+> (risponde 200 con tutto il file e senza `Accept-Ranges`) e con quello **i video non partono su
+> Safari**, pur funzionando su Chrome. Se un video sembra rotto, prima di indagare sul file
+> verificare con che server lo si sta guardando. In produzione GitHub Pages risponde 206 correttamente.
 
 ## Da sapere
 

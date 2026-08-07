@@ -99,26 +99,100 @@
     });
   }
 
-  /* ---- Video loop: play solo in viewport, mai con reduced-motion ---- */
-  var loops = document.querySelectorAll("video[data-loop]");
-  if (loops.length && !reduce && "IntersectionObserver" in window) {
-    var vio = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          var v = entry.target;
-          if (entry.isIntersecting) {
-            v.play().catch(function () {});
-          } else {
-            v.pause();
-          }
-        });
-      },
-      { threshold: 0.25 }
-    );
-    loops.forEach(function (v) {
-      vio.observe(v);
+  /* ---- Video ----------------------------------------------------------
+     Safari nega l'autoplay in parecchi stati comuni (risparmio energetico,
+     riduci movimento, anteprime video disattivate). Prima il rifiuto veniva
+     inghiottito da un catch vuoto e restava un poster morto, non avviabile.
+     Qui ogni rifiuto fa comparire un vero pulsante di avvio, e con
+     reduced-motion il video non parte da solo ma resta avviabile a mano. */
+  document.querySelectorAll("[data-video]").forEach(function (fig) {
+    var loop = fig.querySelector("video[data-loop]");
+    var full = fig.querySelector("video[data-full]");
+    var btn = fig.querySelector("[data-play]");
+    var fullTrigger = fig.querySelector("[data-full-trigger]");
+    if (!btn) return;
+
+    // il video attualmente in scena (il loop, oppure l'integrale se richiesto)
+    var current = loop;
+
+    function showBtn() {
+      btn.hidden = false;
+    }
+    function hideBtn() {
+      btn.hidden = true;
+    }
+
+    function attempt(v, gesture) {
+      if (!v) return;
+      // Safari controlla la proprieta muted al momento del play, non l'attributo
+      if (v.hasAttribute("data-loop")) v.muted = true;
+      var p = v.play();
+      if (!p || !p.then) return;
+      p.then(hideBtn).catch(function () {
+        // niente autoplay: diamo all'utente un modo per avviarlo davvero.
+        // Nessun `controls` qui: attivarlo mentre duration e ancora NaN fa
+        // lanciare a Safari 26 un RangeError dentro i suoi media controls,
+        // che abbandona il layout e puo far cadere nel vuoto il primo tap.
+        showBtn();
+      });
+    }
+
+    btn.addEventListener("click", function () {
+      attempt(current, true);
     });
-  }
+
+    // I controlli nativi solo a riproduzione avviata E con duration nota:
+    // se `controls` compare mentre duration e ancora NaN, Safari 26 lancia un
+    // RangeError dentro i propri media controls e abbandona quel layout.
+    fig.addEventListener("play", hideBtn, true);
+    fig.addEventListener(
+      "playing",
+      function (e) {
+        hideBtn();
+        if (e.target === full && isFinite(full.duration)) full.controls = true;
+      },
+      true
+    );
+
+    if (full && fullTrigger) {
+      fullTrigger.addEventListener("click", function () {
+        if (loop) {
+          loop.pause();
+          loop.hidden = true;
+        }
+        full.hidden = false;
+        current = full;
+        fullTrigger.parentNode.hidden = true;
+        attempt(full, true); // i controlli arrivano su "playing", vedi sopra
+      });
+    }
+
+    if (!loop) return;
+
+    if (reduce) {
+      showBtn(); // nessun autoplay, ma resta guardabile
+      return;
+    }
+
+    // l'attributo autoplay non e nel markup di proposito: la scelta deve passare
+    // di qui, altrimenti il browser parte comunque anche con reduced-motion
+    loop.autoplay = true;
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.target !== current) return;
+            if (entry.isIntersecting) attempt(entry.target, false);
+            else entry.target.pause();
+          });
+        },
+        { threshold: 0.25 }
+      ).observe(loop);
+    } else {
+      attempt(loop, false);
+    }
+  });
 
   /* ---- Form: validazione + preselezione ?oggetto= ---- */
   var form = document.querySelector("form[data-validate]");
