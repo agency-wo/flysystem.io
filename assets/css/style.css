@@ -334,6 +334,14 @@
     text-wrap: pretty;
   }
 
+  /* I 20px arrivavano dalle regole di contesto (hero, bolla-feature, cta-band):
+     il blocco Ingegneria di Bolla non ne aveva nessuna e il paragrafo toccava
+     il titolo. Le altre quattro istanze valgono gia 20px, quindi qui cambia
+     solo quella. */
+  .h2 + .lead {
+    margin-top: 20px;
+  }
+
   .body-max {
     max-width: 34em;
   }
@@ -478,6 +486,26 @@
       min-block-size: 44px;
       align-items: center;
       padding-block: 12px 10px;
+    }
+
+    /* Il footer non era mai stato incluso: le voci di menu misuravano 21px di
+       altezza e i recapiti 28px. Il gap delle liste scende in proporzione, cosi
+       il passo visivo resta quasi lo stesso invece di gonfiarsi. */
+    .site-foot ul a,
+    .site-foot address a,
+    .spec-block dd a {
+      display: flex;
+      align-items: center;
+      min-block-size: 44px;
+    }
+
+    .site-foot ul,
+    .site-foot address {
+      gap: 2px;
+    }
+
+    .skip-link {
+      padding-block: 12px;
     }
   }
 
@@ -726,6 +754,64 @@
 
   .site-foot .brand__tag {
     color: color-mix(in srgb, #f5f2ec 52%, transparent);
+  }
+
+  /* Sponsorizzazione Modena FC 1912: un fatto, non un banner.
+     Stessa impostazione in chi siamo (.sponsor) e nel footer (.foot-sponsor). */
+  .sponsor,
+  .foot-sponsor {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* Niente filetto proprio: .steps chiude gia con un border-bottom e i due
+     tratti paralleli si leggevano come una doppia riga. Lo stemma va nella
+     stessa colonna da 56px dei numerali, cosi il testo si incolonna esatto
+     con i titoli dei passi invece di sfrangiare il bordo sinistro. */
+  .sponsor {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 20px;
+    align-items: center;
+    margin-top: var(--stack-cta);
+  }
+
+  .foot-sponsor {
+    margin-top: 28px;
+  }
+
+  .sponsor img,
+  .foot-sponsor img {
+    inline-size: auto;
+    block-size: 40px;
+    flex: none;
+    justify-self: center;
+  }
+
+  .sponsor span,
+  .foot-sponsor span {
+    display: block;
+  }
+
+  .sponsor b,
+  .foot-sponsor b {
+    font-weight: 500;
+  }
+
+  .sponsor .fine {
+    display: block;
+    margin-top: 2px;
+    color: var(--fg-muted);
+  }
+
+  .foot-sponsor {
+    font-size: 0.875rem;
+    color: color-mix(in srgb, #f5f2ec 62%, transparent);
+  }
+
+  .foot-sponsor b {
+    color: var(--paper);
   }
 
   .site-foot h2 {
@@ -1350,13 +1436,21 @@
       align-self: start;
     }
 
+    /* Su schermi molto stretti le tre colonne fisse spezzavano i valori
+       dall'unita: "3,80" sopra e "m" sotto, su otto modelli. In flex a capo
+       ogni valore resta intero e va a capo come blocco. */
     .index-row__meta--data {
       grid-area: meta;
       text-align: left;
       justify-self: start;
-      grid-auto-flow: column;
-      gap: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
       align-items: baseline;
+    }
+
+    .index-row__meta--data > * {
+      white-space: nowrap;
     }
 
     .index-row__meta--data b {
@@ -1567,6 +1661,16 @@
     aspect-ratio: 16 / 10;
   }
 
+  /* La tessera laterale sta accanto alla .m-wide, che e alta il doppio: con lo
+     stesso 16/10 restava un buco di carta sotto (258px a 1440). 25/32 pareggia
+     le due altezze entro un pixel a 1440, 1024 e 768, e la sorgente e verticale
+     quindi il ritaglio e minimo.
+     Nota: si seleziona per esclusione, non con :not([class]), perche tutte le
+     figure portano gia le classi di reveal. */
+  .outdoor-mosaic figure:not(.m-wide):not(.m-band) img {
+    aspect-ratio: 25 / 32;
+  }
+
   .outdoor-mosaic .m-band img {
     aspect-ratio: 21 / 9;
     object-position: center 26%;
@@ -1653,13 +1757,21 @@
     /* Le tre foto Outdoor impilate a piena larghezza allungavano la home di
        circa mezzo migliaio di pixel: a coppie restano leggibili e la pagina
        si accorcia. La fascia larga resta a tutta larghezza. */
+    /* A due colonne la .m-wide le occupa entrambe e la .m-band fa 1 / -1:
+       alla tessera laterale non resta nessun compagno di riga e finiva mezza
+       larghezza accanto al vuoto. A colonna singola il ritmo torna pulito. */
     .outdoor-mosaic {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 10px;
     }
 
+    .outdoor-mosaic .m-wide,
     .outdoor-mosaic .m-band {
       grid-column: 1 / -1;
+    }
+
+    .outdoor-mosaic figure:not(.m-wide):not(.m-band) img {
+      aspect-ratio: 16 / 10;
     }
 
     /* .outdoor-video non aveva alcuna regola sotto i breakpoint */
@@ -1670,11 +1782,6 @@
     .outdoor-video .video-col,
     .video-frame {
       margin-inline: auto;
-    }
-
-    /* nemmeno .spec ne aveva: le due colonne si stringevano troppo */
-    .spec > div {
-      gap: 12px;
     }
 
     .porte-mosaic {
@@ -2178,6 +2285,39 @@
     display: none;
   }
 
+  /* Attesa dell'integrale: il file pesa e su rete lenta il tap sembrava cadere
+     nel vuoto per oltre due secondi. La classe la mette main.js su [data-video],
+     e la toglie a "playing". Solo sull'integrale: sul loop uno spinner a ogni
+     scroll sarebbe rumore. */
+  .is-video-loading .video-frame__stage::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 40px;
+    block-size: 40px;
+    margin-block-start: -20px;
+    margin-inline-start: -20px;
+    border: 3px solid color-mix(in srgb, var(--paper) 35%, transparent);
+    border-block-start-color: var(--paper);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 40px color-mix(in srgb, var(--ink) 22%, transparent);
+    animation: video-spin 800ms linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes video-spin {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-video-loading .video-frame__stage::after {
+      animation: none;
+    }
+  }
+
   /* Affordance di avvio: compare quando Safari nega l'autoplay (risparmio energetico,
      riduci movimento, anteprime video disattivate) e sempre sul video integrale.
      E anche il modo per non dipendere dai controlli nativi al primo paint. */
@@ -2489,6 +2629,28 @@
     .spec-block > div {
       grid-template-columns: 1fr;
       gap: 6px;
+    }
+
+    /* Stessa cura per la scheda tecnica di Bolla: sotto i ~350px la colonna
+       del termine si riduce a una sessantina di pixel e parole come "Membrana"
+       traboccavano addosso al valore. Impilate restano leggibili. */
+    .spec > div {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    /* Sui telefoni la colonna del numerale si mangiava oltre un quarto della
+       cassa utile per due cifre, lasciando al testo 26 caratteri a 320px.
+       Numerale sopra, testo a piena larghezza: e lo schema che .prof-grid usa
+       gia a ogni larghezza. */
+    .steps li,
+    .sponsor {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .sponsor img {
+      justify-self: start;
     }
   }
 

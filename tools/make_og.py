@@ -1,6 +1,12 @@
 """Compose the branded Open Graph image (1200x630): paper panel with logo + hero photo.
 
-usage: python make_og.py <hero-master.png> <logo.png> <font.otf> <out.jpg>
+usage: python make_og.py <hero-master.png> <logo.png> <font.ttf> <out.jpg>
+
+Pillow non legge i woff2, e gli OTF originali non sono nel repo: converti prima
+il font spedito nel sito, poi passa il TTF ottenuto.
+
+    python -c "from fontTools.ttLib import TTFont; f=TTFont('assets/fonts/GeneralSans-Medium.woff2'); f.flavor=None; f.save('%TEMP%/gs.ttf')"
+    python tools/make_og.py assets/img/home/hero-edificio-1920.jpg assets/img/logo-600.png %TEMP%/gs.ttf assets/img/og/og-default.jpg
 """
 import sys
 from pathlib import Path
@@ -35,7 +41,7 @@ def main(hero_p: Path, logo_p: Path, font_p: Path, out: Path):
 
     # tracked uppercase line
     font = ImageFont.truetype(str(font_p), 21)
-    text = "D I S T R I B U T O R E   U F F I C I A L E"
+    text = "P R O D U Z I O N E   I T A L I A N A"
     tw = d.textlength(text, font=font)
     d.text(((PANEL - tw) / 2, 190 + lh + 40), text, font=font, fill=BLU)
 

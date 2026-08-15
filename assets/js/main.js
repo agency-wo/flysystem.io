@@ -103,7 +103,7 @@
      Safari nega l'autoplay in parecchi stati comuni (risparmio energetico,
      riduci movimento, anteprime video disattivate). Prima il rifiuto veniva
      inghiottito da un catch vuoto e restava un poster morto, non avviabile.
-     Qui ogni rifiuto fa comparire un vero pulsante di avvio, e con
+     Qui ogni rifiuto vero fa comparire un pulsante di avvio, e con
      reduced-motion il video non parte da solo ma resta avviabile a mano. */
   document.querySelectorAll("[data-video]").forEach(function (fig) {
     var loop = fig.querySelector("video[data-loop]");
@@ -115,20 +115,41 @@
     // il video attualmente in scena (il loop, oppure l'integrale se richiesto)
     var current = loop;
 
-    function showBtn() {
-      btn.hidden = false;
+    function showBtn() { btn.hidden = false; }
+    function hideBtn() { btn.hidden = true; }
+
+    // stato di attesa: lo mettiamo sul contenitore, ci pensa il CSS a mostrarlo
+    function loading(on) {
+      fig.classList.toggle("is-video-loading", !!on);
+      fig.setAttribute("aria-busy", on ? "true" : "false");
     }
-    function hideBtn() {
-      btn.hidden = true;
+
+    // Scalda il buffer. Con preload="metadata" Safari prende i metadati e poi
+    // sospende: il primo dato utile lo chiede solo al play(), e il poster resta
+    // fermo per tutto il tempo di rete. Alzare preload ad "auto" fa ripartire il
+    // caricamento senza toccare quello gia in corso. load() solo se non c'e
+    // proprio nulla in volo, altrimenti azzererebbe il buffer invece di ampliarlo.
+    function warm(v) {
+      if (!v) return;
+      v.preload = "auto";
+      if (v.readyState === v.HAVE_NOTHING && v.networkState !== v.NETWORK_LOADING) v.load();
     }
 
     function attempt(v, gesture) {
       if (!v) return;
       // Safari controlla la proprieta muted al momento del play, non l'attributo
       if (v.hasAttribute("data-loop")) v.muted = true;
+      // l'integrale pesa: se non e pronto, l'attesa va dichiarata subito
+      if (v === full && v.readyState < v.HAVE_FUTURE_DATA) loading(true);
       var p = v.play();
       if (!p || !p.then) return;
-      p.then(hideBtn).catch(function () {
+      p.then(hideBtn).catch(function (err) {
+        loading(false);
+        // AbortError non e un rifiuto del browser: e la nostra pause() (uscita
+        // dalla vista, o passaggio all'integrale) che ha interrotto un play()
+        // ancora in attesa di dati. Mostrare il pulsante qui significa piazzare
+        // un overlay sopra un video che sta funzionando.
+        if (err && err.name === "AbortError") return;
         // niente autoplay: diamo all'utente un modo per avviarlo davvero.
         // Nessun `controls` qui: attivarlo mentre duration e ancora NaN fa
         // lanciare a Safari 26 un RangeError dentro i suoi media controls,
@@ -137,9 +158,7 @@
       });
     }
 
-    btn.addEventListener("click", function () {
-      attempt(current, true);
-    });
+    btn.addEventListener("click", function () { attempt(current, true); });
 
     // I controlli nativi solo a riproduzione avviata E con duration nota:
     // se `controls` compare mentre duration e ancora NaN, Safari 26 lancia un
@@ -149,12 +168,30 @@
       "playing",
       function (e) {
         hideBtn();
+        loading(false);
         if (e.target === full && isFinite(full.duration)) full.controls = true;
+      },
+      true
+    );
+    // Solo sull'integrale: sul loop uno spinner a ogni scroll sarebbe rumore.
+    fig.addEventListener(
+      "waiting",
+      function (e) { if (e.target === full && e.target === current) loading(true); },
+      true
+    );
+    fig.addEventListener(
+      "error",
+      function (e) {
+        if (e.target !== current) return;
+        loading(false);
+        showBtn(); // il file non arriva: almeno resta un comando per riprovare
       },
       true
     );
 
     if (full && fullTrigger) {
+      // pointerdown arriva prima del click: gli 8 MB iniziano a scendere li
+      fullTrigger.addEventListener("pointerdown", function () { warm(full); });
       fullTrigger.addEventListener("click", function () {
         if (loop) {
           loop.pause();
@@ -163,6 +200,7 @@
         full.hidden = false;
         current = full;
         fullTrigger.parentNode.hidden = true;
+        loading(true); // il tap deve avere una risposta subito, non fra due secondi
         attempt(full, true); // i controlli arrivano su "playing", vedi sopra
       });
     }
@@ -174,22 +212,38 @@
       return;
     }
 
-    // l'attributo autoplay non e nel markup di proposito: la scelta deve passare
-    // di qui, altrimenti il browser parte comunque anche con reduced-motion
-    loop.autoplay = true;
-
     if ("IntersectionObserver" in window) {
+      // Due osservatori distinti. Il primo scalda molto prima che il video
+      // arrivi in scena; il secondo avvia appena si vede il primo pixel.
+      // Con un solo osservatore al 25% il poster restava fermo per tutta la
+      // distanza fra il bordo e un quarto di video: qui misurati ~200 ms.
+      new IntersectionObserver(
+        function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            warm(entry.target);
+            obs.unobserve(entry.target);
+          });
+        },
+        { rootMargin: "200% 0px" }
+      ).observe(loop);
+
+      // Nota: niente `loop.autoplay = true`. Era inerte, perche la prima
+      // notifica dell'osservatore chiamava pause() e la specifica azzera li il
+      // can-autoplay flag. Ora la pausa scatta solo se il video sta davvero
+      // andando, quindi rimetterlo lo farebbe partire fuori campo.
       new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
             if (entry.target !== current) return;
             if (entry.isIntersecting) attempt(entry.target, false);
-            else entry.target.pause();
+            else if (!entry.target.paused) entry.target.pause();
           });
         },
-        { threshold: 0.25 }
+        { threshold: 0 }
       ).observe(loop);
     } else {
+      warm(loop);
       attempt(loop, false);
     }
   });
