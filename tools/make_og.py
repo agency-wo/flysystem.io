@@ -2,18 +2,18 @@
 
 usage: python make_og.py <hero-master.png> <logo.png> <font.ttf> <out.jpg>
 
-Pillow non legge i woff2, e gli OTF originali non sono nel repo: converti prima
-il font spedito nel sito, poi passa il TTF ottenuto.
+Pillow non legge i woff2: converti prima il font spedito nel sito, poi passa il
+TTF ottenuto.
 
-    python -c "from fontTools.ttLib import TTFont; f=TTFont('assets/fonts/GeneralSans-Medium.woff2'); f.flavor=None; f.save('%TEMP%/gs.ttf')"
-    python tools/make_og.py assets/img/home/hero-edificio-1920.jpg assets/img/logo-600.png %TEMP%/gs.ttf assets/img/og/og-default.jpg
+    python -c "from fontTools.ttLib import TTFont; f=TTFont('assets/fonts/Switzer-Medium.woff2'); f.flavor=None; f.save('%TEMP%/sw.ttf')"
+    python tools/make_og.py assets/img/home/hero-edificio-1920.jpg assets/img/logo-600.png %TEMP%/sw.ttf assets/img/og/og-default.jpg
 """
 import sys
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
-PAPER, NAVY, BLU = "#F5F2EC", "#141B2B", "#304890"
+PAPER, NAVY, BLU = "#F1F2F3", "#14171D", "#304890"
 
 def main(hero_p: Path, logo_p: Path, font_p: Path, out: Path):
     W, H, PANEL = 1200, 630, 470

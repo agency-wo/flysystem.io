@@ -1,6 +1,6 @@
 # flysystem.io · Fly System Srls
 
-Sito vetrina di Fly System Srls: **produzione italiana** di porte, serramenti, pavimenti e sistemi outdoor, in Italia e nel mondo. Linguaggio "quiet luxury" su riferimento RODA / Cassina / Gamma / Talenti: carta avorio, blu Fly System (dal logo), fotografia protagonista. HTML/CSS/JS puro, nessun framework, nessun processo di build, zero richieste esterne.
+Sito vetrina di Fly System Srls: **produzione italiana** di porte, serramenti, pavimenti e sistemi outdoor, in Italia e nel mondo. Linguaggio "quiet luxury" su riferimento RODA / Cassina / Gamma / Talenti: grigi freddi, blu Fly System (dal logo), fotografia protagonista. HTML/CSS/JS puro, nessun framework, nessun processo di build, zero richieste esterne.
 
 ## Struttura
 
@@ -13,7 +13,7 @@ contatti.html         Recapiti, modulo di contatto, FAQ
 assets/
   css/style.css       Design system completo (@layer tokens/base/components/pages)
   js/main.js          Solo progressive enhancement (menu, reveal, video loop in viewport, form): il sito funziona senza JS
-  fonts/              Zodiak + General Sans (woff2, self-hosted, licenza Fontshare)
+  fonts/              Switzer (woff2, self-hosted, licenza Fontshare)
   img/                Immagini AVIF/WebP/JPEG responsive estratte dai cataloghi + foto reali + logo
   pdf/                14 cataloghi ufficiali (fly-system-*.pdf)
   video/              bolla-drone.mp4 (loop muto, gated da JS) + pergole-promo.mp4 (tap-to-play)
@@ -23,8 +23,9 @@ _sorgenti/            Materiali sorgente del cliente (in .gitignore, mai pubblic
 
 ## Brand
 
-- Palette campionata dal logo ufficiale: blu primario `#304890`, navy `#141B2B`, blu chiaro `#9FB0DC`, argento `#84849C`, carta `#F5F2EC`. Tutto parte dai token in cima a `style.css`.
+- Palette: grigi freddi con il blu del logo come unico accento. Carta `#F1F2F3`, carta alternata `#E7E9EB`, inchiostro `#14171D`, testo secondario `#3D434E`, grigio `#5D6470`, blu `#304890`, blu chiaro `#9FB0DC`, acciaio `#7D8494`. Tutto parte dai token in cima a `style.css`.
 - Logo 2026 (lockup orizzontale, derivato da `_sorgenti/alllogosflysystem.jpeg` con `tools/prep_logo2.py`): header, favicon e immagine OG. La variante con sponsorizzazione sportiva NON si usa sul sito.
+- Tipografia: una sola famiglia, Switzer. Titoli grandi in Light (300) con tracciatura stretta, testo in Regular, micro-etichette maiuscole in Medium, corsivo per la parola in evidenza nei titoli.
 - Regola tipografica fissa: mai em dash (né en dash). Separatori: punto mediano (·), due punti, virgole; trattino semplice per gli intervalli (REI 30-120).
 - White label: mai nominare i produttori o le società del gruppo. I due cataloghi ceramica sono già rebrandizzati Fly System via `tools/rebrand_pdf.py` (job in `tools/rebrand_jobs/`); verificare ogni nuova estrazione con l'audit (`python tools/rebrand_pdf.py audit <pdf>`).
 
