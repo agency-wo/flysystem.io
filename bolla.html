@@ -28,8 +28,7 @@
   <header class="site-head">
     <div class="wrap site-head__in">
       <a class="brand" href="index.html">
-        <img class="brand__logo" src="assets/img/logo-header.png" alt="Fly System" width="380" height="120">
-        <span class="brand__tag">Produzione italiana</span>
+        <img class="brand__logo" src="assets/img/logo-sponsor.png" srcset="assets/img/logo-sponsor.png 1x, assets/img/logo-sponsor@2x.png 2x, assets/img/logo-sponsor@3x.png 3x" width="108" height="48" alt="Fly System, sponsor ufficiale Modena FC 1912">
       </a>
       <nav class="site-nav" aria-label="Navigazione principale">
         <a href="index.html#prodotti">Prodotti</a>
@@ -67,7 +66,7 @@
   <main id="main">
 
     <!-- ============ HERO ============ -->
-    <section class="dark bolla-hero" aria-labelledby="bolla-title">
+    <section class="bolla-hero" aria-labelledby="bolla-title">
       <div class="wrap">
         <p class="eyebrow rv">Bolle Luxury &middot; Collezione 2026</p>
         <h1 class="h-display rv" id="bolla-title">Bolla, la cupola che allunga la <em>stagione</em>.</h1>
@@ -124,53 +123,97 @@
           <p class="eyebrow rv">Linea Ristorazione</p>
           <h2 class="h2 rv" id="rist-title">Dalla 400 alla 1000, una misura per ogni <em>sala</em>.</h2>
         </div>
-        <ul class="index index--data index--shots">
-          <li>
-            <div class="index-row">
-              <span class="num-c">01</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/r400-240.jpg" srcset="assets/img/bolla/modelli/r400-240.jpg 240w, assets/img/bolla/modelli/r400-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Interno di una bolla trasparente con tavolo rotondo apparecchiato" loading="lazy" decoding="async">
-              <span class="index-row__title">Bolla 400</span>
-              <span class="index-row__desc">Eleganza concentrata: dining raccolto, per tavoli da 4 a 6 con ampio margine di comfort.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 3,80 m</b><span>11 m&sup2;</span><span>10-12 coperti</span></span>
-            </div>
-          </li>
-          <li>
-            <div class="index-row">
-              <span class="num-c">02</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/r500-240.jpg" srcset="assets/img/bolla/modelli/r500-240.jpg 240w, assets/img/bolla/modelli/r500-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Bolla trasparente illuminata di sera accanto a una palma" loading="lazy" decoding="async">
-              <span class="index-row__title">Bolla 500</span>
-              <span class="index-row__desc">La misura piu richiesta: lo spazio ideale per una sala serale completa, con due finestre apribili.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 4,95 m</b><span>18 m&sup2;</span><span>16-18 coperti</span></span>
-            </div>
-          </li>
-          <li>
-            <div class="index-row">
-              <span class="num-c">03</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/r650-240.jpg" srcset="assets/img/bolla/modelli/r650-240.jpg 240w, assets/img/bolla/modelli/r650-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Interno di una bolla con illuminazione verde e tavoli" loading="lazy" decoding="async">
-              <span class="index-row__title">Bolla 650</span>
-              <span class="index-row__desc">Un&rsquo;oasi di oltre 6 metri: la bolla che reinventa la sala, con quattro finestre apribili di serie.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 6,50 m</b><span>33 m&sup2;</span><span>28-30 coperti</span></span>
-            </div>
-          </li>
-          <li>
-            <div class="index-row">
-              <span class="num-c">04</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/r800-240.jpg" srcset="assets/img/bolla/modelli/r800-240.jpg 240w, assets/img/bolla/modelli/r800-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Bolla con tavoli apparecchiati davanti a un locale, di sera" loading="lazy" decoding="async">
-              <span class="index-row__title">Bolla 800</span>
-              <span class="index-row__desc">Grandi sale e fine dining all&rsquo;aperto, in un unico spazio immersivo.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 8,00 m</b><span>fino a 50 coperti</span></span>
-            </div>
-          </li>
-          <li>
-            <div class="index-row">
-              <span class="num-c">05</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/r1000-240.jpg" srcset="assets/img/bolla/modelli/r1000-240.jpg 240w, assets/img/bolla/modelli/r1000-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Grande bolla trasparente installata su un prato" loading="lazy" decoding="async">
-              <span class="index-row__title">Bolla 1000</span>
-              <span class="index-row__desc">Per chi non accetta compromessi: grandi eventi e installazioni su misura, dalla A alla Z.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 10,00 m</b><span>60 coperti e oltre</span></span>
-            </div>
-          </li>
-        </ul>
+        <div class="modelli" data-rv-group>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/r400-240.avif 240w, assets/img/bolla/modelli/r400-480.avif 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/r400-240.webp 240w, assets/img/bolla/modelli/r400-480.webp 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <img src="assets/img/bolla/modelli/r400-480.jpg" srcset="assets/img/bolla/modelli/r400-240.jpg 240w, assets/img/bolla/modelli/r400-480.jpg 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw" width="480" height="640" alt="Interno di una bolla trasparente con tavolo rotondo apparecchiato" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">400</p>
+            <h3 class="modello__nome">Bolla 400</h3>
+            <p class="modello__desc">Eleganza concentrata: dining raccolto, per tavoli da 4 a 6 con ampio margine di comfort.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>3,80 m</dd></div>
+              <div><dt>Superficie</dt><dd>11 m&sup2;</dd></div>
+              <div><dt>Coperti</dt><dd>10-12</dd></div>
+            </dl>
+          </article>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/r500-240.avif 240w, assets/img/bolla/modelli/r500-480.avif 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/r500-240.webp 240w, assets/img/bolla/modelli/r500-480.webp 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <img src="assets/img/bolla/modelli/r500-480.jpg" srcset="assets/img/bolla/modelli/r500-240.jpg 240w, assets/img/bolla/modelli/r500-480.jpg 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw" width="480" height="640" alt="Bolla trasparente illuminata di sera accanto a una palma" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">500</p>
+            <h3 class="modello__nome">Bolla 500</h3>
+            <p class="modello__desc">La misura pi&ugrave; richiesta: lo spazio ideale per una sala serale completa, con due finestre apribili.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>4,95 m</dd></div>
+              <div><dt>Superficie</dt><dd>18 m&sup2;</dd></div>
+              <div><dt>Coperti</dt><dd>16-18</dd></div>
+            </dl>
+          </article>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/r650-240.avif 240w, assets/img/bolla/modelli/r650-480.avif 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/r650-240.webp 240w, assets/img/bolla/modelli/r650-480.webp 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <img src="assets/img/bolla/modelli/r650-480.jpg" srcset="assets/img/bolla/modelli/r650-240.jpg 240w, assets/img/bolla/modelli/r650-480.jpg 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw" width="480" height="640" alt="Interno di una bolla con illuminazione verde e tavoli" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">650</p>
+            <h3 class="modello__nome">Bolla 650</h3>
+            <p class="modello__desc">Un&rsquo;oasi di oltre 6 metri: la bolla che reinventa la sala, con quattro finestre apribili di serie.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>6,50 m</dd></div>
+              <div><dt>Superficie</dt><dd>33 m&sup2;</dd></div>
+              <div><dt>Coperti</dt><dd>28-30</dd></div>
+            </dl>
+          </article>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/r800-240.avif 240w, assets/img/bolla/modelli/r800-480.avif 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/r800-240.webp 240w, assets/img/bolla/modelli/r800-480.webp 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <img src="assets/img/bolla/modelli/r800-480.jpg" srcset="assets/img/bolla/modelli/r800-240.jpg 240w, assets/img/bolla/modelli/r800-480.jpg 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw" width="480" height="640" alt="Bolla con tavoli apparecchiati davanti a un locale, di sera" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">800</p>
+            <h3 class="modello__nome">Bolla 800</h3>
+            <p class="modello__desc">Grandi sale e fine dining all&rsquo;aperto, in un unico spazio immersivo.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>8,00 m</dd></div>
+              <div><dt>Coperti</dt><dd>fino a 50</dd></div>
+            </dl>
+          </article>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/r1000-240.avif 240w, assets/img/bolla/modelli/r1000-480.avif 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/r1000-240.webp 240w, assets/img/bolla/modelli/r1000-480.webp 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw">
+                <img src="assets/img/bolla/modelli/r1000-480.jpg" srcset="assets/img/bolla/modelli/r1000-240.jpg 240w, assets/img/bolla/modelli/r1000-480.jpg 480w" sizes="(max-width: 640px) 92vw, (max-width: 1000px) 44vw, 30vw" width="480" height="640" alt="Grande bolla trasparente installata su un prato" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">1000</p>
+            <h3 class="modello__nome">Bolla 1000</h3>
+            <p class="modello__desc">Per chi non accetta compromessi: grandi eventi e installazioni su misura, dalla A alla Z.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>10,00 m</dd></div>
+              <div><dt>Coperti</dt><dd>60 e oltre</dd></div>
+            </dl>
+          </article>
+
+        </div>
         <p class="fine note-fine rv">Finestre apribili di serie su ogni misura. Configurazione, accessori e riscaldamento definiti in fase di progetto.</p>
       </div>
     </section>
@@ -182,33 +225,101 @@
           <p class="eyebrow rv">Linea Glamping</p>
           <h2 class="h2 rv" id="glamping-title">Camere che si prenotano <em>da sole</em>.</h2>
         </div>
-        <ul class="index index--data index--shots">
-          <li>
-            <div class="index-row">
-              <span class="num-c">01</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/g400-240.jpg" srcset="assets/img/bolla/modelli/g400-240.jpg 240w, assets/img/bolla/modelli/g400-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Bolla glamping affacciata sul mare" loading="lazy" decoding="async">
-              <span class="index-row__title">Camera 400</span>
-              <span class="index-row__desc">Configurazione glamping con doppia pannellatura e skylight, per dormire sotto le stelle.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 3,80 m</b><span>11 m&sup2;</span><span>2 persone</span></span>
-            </div>
+        <div class="modelli modelli--due" data-rv-group>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/g400-240.avif 240w, assets/img/bolla/modelli/g400-480.avif 480w" sizes="(max-width: 640px) 92vw, 44vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/g400-240.webp 240w, assets/img/bolla/modelli/g400-480.webp 480w" sizes="(max-width: 640px) 92vw, 44vw">
+                <img src="assets/img/bolla/modelli/g400-480.jpg" srcset="assets/img/bolla/modelli/g400-240.jpg 240w, assets/img/bolla/modelli/g400-480.jpg 480w" sizes="(max-width: 640px) 92vw, 44vw" width="480" height="640" alt="Bolla glamping affacciata sul mare" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">400</p>
+            <h3 class="modello__nome">Camera 400</h3>
+            <p class="modello__desc">Configurazione glamping con doppia pannellatura e skylight, per dormire sotto le stelle.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>3,80 m</dd></div>
+              <div><dt>Superficie</dt><dd>11 m&sup2;</dd></div>
+              <div><dt>Ospiti</dt><dd>2</dd></div>
+            </dl>
+          </article>
+
+          <article class="modello rv">
+            <figure class="modello__foto">
+              <picture>
+                <source type="image/avif" srcset="assets/img/bolla/modelli/g500-240.avif 240w, assets/img/bolla/modelli/g500-480.avif 480w" sizes="(max-width: 640px) 92vw, 44vw">
+                <source type="image/webp" srcset="assets/img/bolla/modelli/g500-240.webp 240w, assets/img/bolla/modelli/g500-480.webp 480w" sizes="(max-width: 640px) 92vw, 44vw">
+                <img src="assets/img/bolla/modelli/g500-480.jpg" srcset="assets/img/bolla/modelli/g500-240.jpg 240w, assets/img/bolla/modelli/g500-480.jpg 480w" sizes="(max-width: 640px) 92vw, 44vw" width="480" height="640" alt="Bolla glamping specchiata su un prato collinare" loading="lazy" decoding="async">
+              </picture>
+            </figure>
+            <p class="modello__num">500</p>
+            <h3 class="modello__nome">Camera 500</h3>
+            <p class="modello__desc">La bestseller del glamping: fronte panoramico trasparente, parte opaca e tenda privacy.</p>
+            <dl class="modello__dati">
+              <div><dt>Diametro</dt><dd>4,95 m</dd></div>
+              <div><dt>Superficie</dt><dd>18 m&sup2;</dd></div>
+              <div><dt>Ospiti</dt><dd>2</dd></div>
+            </dl>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LE BOLLE COLLEGATE ============ -->
+    <section class="section section--flush-top" aria-labelledby="suite-title">
+      <div class="wrap">
+        <div class="collegate">
+          <figure class="collegate__foto rv rv-img">
+            <picture>
+              <source type="image/avif" srcset="assets/img/bolla/modelli/suite-240.avif 240w, assets/img/bolla/modelli/suite-480.avif 480w" sizes="(max-width: 860px) 92vw, 46vw">
+              <source type="image/webp" srcset="assets/img/bolla/modelli/suite-240.webp 240w, assets/img/bolla/modelli/suite-480.webp 480w" sizes="(max-width: 860px) 92vw, 46vw">
+              <img src="assets/img/bolla/modelli/suite-480.jpg" srcset="assets/img/bolla/modelli/suite-240.jpg 240w, assets/img/bolla/modelli/suite-480.jpg 480w" sizes="(max-width: 860px) 92vw, 46vw" width="480" height="640" alt="Due bolle collegate su una pedana in legno in collina" loading="lazy" decoding="async">
+            </picture>
+          </figure>
+          <div class="collegate__testo">
+            <p class="eyebrow rv">Le bolle collegate</p>
+            <h2 class="h2 rv" id="suite-title">La suite con il bagno <em>dentro</em>.</h2>
+            <p class="lead rv">Una camera 500 collegata a una bolla 400 con bagno integrato: due ambienti che restano un unico prodotto, senza allacci in muratura e senza rinunciare al comfort di una camera vera.</p>
+            <dl class="modello__dati collegate__dati rv">
+              <div><dt>Lunghezza</dt><dd>19 m max</dd></div>
+              <div><dt>Superficie</dt><dd>34 m&sup2;</dd></div>
+              <div><dt>Ospiti</dt><dd>2</dd></div>
+            </dl>
+            <p class="porte-cta rv"><a class="link-arr" href="contatti.html?oggetto=bolla">Chiedi la configurazione <span class="arr">&rarr;</span></a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ QUATTRO GARANZIE ============ -->
+    <section class="section section--flush-top" aria-labelledby="garanzie-title">
+      <div class="wrap">
+        <div class="sect-head">
+          <p class="eyebrow rv">Perch&eacute; regge</p>
+          <h2 class="h2 rv" id="garanzie-title">Quattro numeri che fanno la <em>differenza</em>.</h2>
+        </div>
+        <ul class="garanzie" data-rv-group>
+          <li class="rv">
+            <p class="garanzie__dato">100 km/h</p>
+            <h3 class="garanzie__titolo">Resistenza al vento</h3>
+            <p>Struttura certificata per l&rsquo;esterno: il servizio non si ferma quando cambia il tempo.</p>
           </li>
-          <li>
-            <div class="index-row">
-              <span class="num-c">02</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/g500-240.jpg" srcset="assets/img/bolla/modelli/g500-240.jpg 240w, assets/img/bolla/modelli/g500-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Bolla glamping specchiata su un prato collinare" loading="lazy" decoding="async">
-              <span class="index-row__title">Camera 500</span>
-              <span class="index-row__desc">La bestseller del glamping: fronte panoramico trasparente, parte opaca e tenda privacy.</span>
-              <span class="index-row__meta index-row__meta--data"><b>&Oslash; 4,95 m</b><span>18 m&sup2;</span><span>2 persone</span></span>
-            </div>
+          <li class="rv">
+            <p class="garanzie__dato">-50 / +100 &deg;C</p>
+            <h3 class="garanzie__titolo">Esercizio in ogni stagione</h3>
+            <p>Dalla costa d&rsquo;agosto alla montagna d&rsquo;inverno, senza limiti di installazione.</p>
           </li>
-          <li>
-            <div class="index-row">
-              <span class="num-c">03</span>
-              <img class="index-row__shot" src="assets/img/bolla/modelli/suite-240.jpg" srcset="assets/img/bolla/modelli/suite-240.jpg 240w, assets/img/bolla/modelli/suite-480.jpg 480w" sizes="(max-width: 720px) 84px, 132px" width="240" height="320" alt="Due bolle collegate su una pedana in legno in collina" loading="lazy" decoding="async">
-              <span class="index-row__title">Suite Connessa</span>
-              <span class="index-row__desc">Una camera 500 collegata a una bolla 400 con bagno integrato: due ambienti, un unico prodotto.</span>
-              <span class="index-row__meta index-row__meta--data"><b>19 m max</b><span>34 m&sup2;</span><span>2 persone</span></span>
-            </div>
+          <li class="rv">
+            <p class="garanzie__dato">100%</p>
+            <h3 class="garanzie__titolo">Membrana riciclabile</h3>
+            <p>Ignifuga e con protezione UV raddoppiata, per durare senza ingiallire.</p>
+          </li>
+          <li class="rv">
+            <p class="garanzie__dato">Zero</p>
+            <h3 class="garanzie__titolo">Opere murarie</h3>
+            <p>Si installa e si rimuove completamente: nessun intervento permanente sul tuo spazio.</p>
           </li>
         </ul>
       </div>
@@ -365,8 +476,8 @@
     <!-- ============ CTA ============ -->
     <section class="dark section--s cta-band" aria-labelledby="cta-title">
       <div class="wrap">
-        <h2 class="h2 rv" id="cta-title">Porta la Bolla nel <em>tuo locale</em>.</h2>
-        <p class="lead rv">Raccontaci il tuo spazio: ti rispondiamo con la misura giusta, configurazioni, tempi di consegna e preventivo.</p>
+        <h2 class="h2 rv" id="cta-title">Parlaci del tuo <em>progetto</em>.</h2>
+        <p class="lead rv">Raccontaci lo spazio che hai: cortile, terrazza, giardino o piazzola. Ti rispondiamo con la misura giusta, la configurazione, i tempi di consegna e il preventivo.</p>
         <p class="cta-links rv">
           <a class="link-arr" href="contatti.html?oggetto=bolla">Richiedi un preventivo <span class="arr">&rarr;</span></a>
           <a class="link-arr" href="assets/pdf/fly-system-bolla.pdf" download>Scarica il catalogo <span class="arr">&darr;</span></a>

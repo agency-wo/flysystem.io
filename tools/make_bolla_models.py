@@ -22,14 +22,16 @@ PDF = ROOT / "assets" / "pdf" / "fly-system-bolla.pdf"
 # del ritaglio 3:4 (0 = alto, 0.5 = centro, 1 = basso)
 JOBS = [
     ("r400", 4, (0.017, 0.012, 0.455, 0.496), 0.5),
-    ("r500", 5, (0.551, 0.012, 0.989, 0.496), 0.5),
+    # la cupola sta nella meta alta: centrando, il ritaglio si riempiva di prato
+    ("r500", 5, (0.551, 0.012, 0.989, 0.496), 0.0),
     ("r650", 6, (0.017, 0.012, 0.455, 0.496), 0.5),
     # la foto della 800 in catalogo e un montaggio in corso: qui va una sala
     # vera della stessa linea, il dato esatto lo porta comunque la riga
     ("r800", 5, (0.551, 0.504, 0.989, 0.992), 0.5),
-    ("r1000", 7, (0.518, 0.090, 0.928, 0.730), 0.45),
+    ("r1000", 7, (0.518, 0.090, 0.928, 0.730), 0.2),
     ("g500", 9, (0.066, 0.534, 0.491, 0.862), 0.5),
-    ("g400", 12, (0.551, 0.012, 0.983, 0.496), 0.5),
+    # in basso c'e il bordo del letto: si alza il ritaglio sulla vista
+    ("g400", 12, (0.551, 0.012, 0.983, 0.496), 0.2),
     ("suite", 13, (0.017, 0.012, 0.455, 0.496), 0.5),
 ]
 

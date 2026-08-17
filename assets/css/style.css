@@ -106,6 +106,10 @@
     --measure-wide: 46em;
     /* distanza fissa tra un paragrafo e la sua riga di CTA (era 88/40/30/25) */
     --stack-cta: 36px;
+    /* altezza reale della testata appiccicosa, misurata: serve alle ancore */
+    --head-h: 93px;
+    /* respiro sopra le didascalie: era 10/12/14/18 sulla stessa classe */
+    --fig-gap: 12px;
 
     /* movimento */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -228,8 +232,13 @@
     top: 12px;
   }
 
-  [id] {
-    scroll-margin-top: 92px;
+  /* Compensazione della testata appiccicosa per tutte le ancore. Prima era
+     scroll-margin-top su [id], che copriva i soli elementi con un id (le
+     didascalie, per dire, non ne hanno) ed era scritto a mano a 92px contro
+     una barra alta 92,41: il titolo di destinazione finiva sotto il bordo.
+     scroll-padding-top sul contenitore di scorrimento vale per ogni ancora. */
+  html {
+    scroll-padding-top: var(--head-h);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -399,7 +408,7 @@
     display: flex;
     align-items: baseline;
     gap: 8px;
-    margin-top: 10px;
+    margin-top: var(--fig-gap);
     font-size: 0.8rem;
     font-variant-numeric: tabular-nums;
     color: var(--fg-muted);
@@ -500,9 +509,11 @@
       min-block-size: 44px;
     }
 
-    .site-foot ul,
-    .site-foot address {
-      gap: 2px;
+    /* i bersagli salgono a 44px: il gap scende in proporzione via token, cosi
+       il passo visivo resta simile invece di gonfiare il footer. Scritto come
+       gap diretto perdeva contro la regola base, piu avanti nel file. */
+    .site-foot {
+      --foot-gap: 2px;
     }
 
     .skip-link {
@@ -520,16 +531,16 @@
     transition: background-color var(--t-fast) ease, box-shadow var(--t-fast) ease;
   }
 
+  /* Testata piena, non velata. Prima c'era un blocco @supports che invertiva il
+     senso del miglioramento progressivo: chi supporta backdrop-filter riceveva
+     uno sfondo PIU trasparente (80%) di chi non lo supporta (92%), e Android
+     prende sempre quel ramo. Con il 20% di passaggio il contenuto sottostante
+     attraversava la barra, le immagini in parallasse (promosse in composizione
+     da will-change) ci lasciavano una scia, e una foto scura spostava la barra
+     di quasi 30 L* verso il grigio. Opaca risolve tutt'e tre le cose. */
   .site-head.is-scrolled {
-    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    background: var(--paper);
     box-shadow: 0 1px 0 var(--line);
-  }
-
-  @supports (backdrop-filter: blur(8px)) {
-    .site-head.is-scrolled {
-      background: color-mix(in srgb, var(--paper) 80%, transparent);
-      backdrop-filter: blur(8px);
-    }
   }
 
   .site-head__in {
@@ -546,11 +557,14 @@
     line-height: 1.15;
   }
 
+  /* Il lockup porta gia il marchio e la riga sponsor: niente .brand__tag sotto,
+     altrimenti la testata arriverebbe a tre righe di testo. Su schermi densi
+     48px logici valgono 144px reali, cioe la variante 3x a grandezza naturale,
+     ed e li che la riga sponsor resta leggibile. */
   .brand__logo {
     display: block;
-    block-size: 34px;
+    block-size: 48px;
     inline-size: auto;
-    margin-bottom: 3px;
   }
 
   .brand__name {
@@ -828,7 +842,7 @@
     list-style: none;
     padding: 0;
     display: grid;
-    gap: 10px;
+    gap: var(--foot-gap, 10px);
   }
 
   .site-foot a {
@@ -845,7 +859,7 @@
     font-style: normal;
     color: var(--paper-dim);
     display: grid;
-    gap: 10px;
+    gap: var(--foot-gap, 10px);
   }
 
   .site-foot {
@@ -1553,7 +1567,7 @@
   }
 
   .hero-band .fig {
-    margin-top: 14px;
+    margin-top: var(--fig-gap);
   }
 
   /* fascia fotografica riutilizzabile tra le sezioni */
@@ -1596,7 +1610,7 @@
   }
 
   .photo-band .fig {
-    margin-top: 14px;
+    margin-top: var(--fig-gap);
   }
 
   /* ---- sezione Porte: mosaico fotografico + tipologie ---- */
@@ -1628,7 +1642,7 @@
   }
 
   .porte-mosaic .fig {
-    margin-top: 12px;
+    margin-top: var(--fig-gap);
   }
 
   .outdoor-mosaic {
@@ -1678,7 +1692,7 @@
   }
 
   .outdoor-mosaic .fig {
-    margin-top: 12px;
+    margin-top: var(--fig-gap);
   }
 
   .outdoor-video {
@@ -1870,7 +1884,7 @@
 
   .dome-fig .fig {
     justify-content: center;
-    margin-top: 14px;
+    margin-top: var(--fig-gap);
   }
 
   .bolla-feature .h2 {
@@ -2356,7 +2370,7 @@
   }
 
   .video-frame .fig {
-    margin-top: 14px;
+    margin-top: var(--fig-gap);
   }
 
   .video-col {
@@ -2365,6 +2379,150 @@
 
   .video-frame__more {
     margin-top: 14px;
+  }
+
+  /* ---- collezione Bolla: una scheda per modello -------------------------
+     Prima i modelli erano righe d'indice con una miniatura da 84px e le cifre
+     incolonnate a destra: impossibile confrontare due diametri. Qui ogni
+     modello ha la sua foto, il numero come identificativo e le cifre in
+     micro-colonne allineate, che e come si legge un listino. */
+
+  .modelli {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: clamp(28px, 3.4vw, 48px);
+  }
+
+  /* la linea glamping ha due sole voci: non devono allargarsi a tutta riga */
+  .modelli--due {
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 400px));
+  }
+
+  .modello {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+
+  .modello__foto {
+    margin: 0 0 20px;
+    overflow: hidden;
+  }
+
+  .modello__foto img {
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+  }
+
+  .modello__num {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .modello__nome {
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-top: 6px;
+  }
+
+  .modello__desc {
+    margin-top: 10px;
+    color: var(--fg-soft);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* le cifre si leggono in colonna, non in una stringa unica */
+  .modello__dati {
+    display: flex;
+    gap: 26px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .modello__dati dt {
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+
+  .modello__dati dd {
+    margin: 4px 0 0;
+    font-size: 1rem;
+  }
+
+  /* ---- le bolle collegate (suite con bagno) ---- */
+
+  .collegate {
+    display: grid;
+    grid-template-columns: 0.9fr 1fr;
+    gap: clamp(28px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .collegate__foto {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .collegate__foto img {
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+  }
+
+  .collegate__dati {
+    border-top: 1px solid var(--rule);
+  }
+
+  /* ---- quattro garanzie ---- */
+
+  .garanzie {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    gap: clamp(28px, 3vw, 44px);
+  }
+
+  .garanzie li {
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+  }
+
+  .garanzie__dato {
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(1.9rem, 3.4vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.022em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .garanzie__titolo {
+    margin-top: 14px;
+    font-size: 0.98rem;
+    font-weight: 500;
+  }
+
+  .garanzie li p:last-child {
+    margin-top: 8px;
+    color: var(--fg-muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
   }
 
   .bolla-gallery {
@@ -2555,6 +2713,24 @@
     }
   }
 
+  @media (max-width: 860px) {
+    /* la suite collegata passa a colonna: la foto sopra, i dati sotto */
+    .collegate {
+      grid-template-columns: 1fr;
+    }
+
+    .collegate__foto {
+      max-width: 420px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* sui telefoni le tre cifre stanno larghe: bastano meno respiro fra loro */
+    .modello__dati {
+      gap: 20px;
+    }
+  }
+
   @media (max-width: 720px) {
     .bolla-gallery {
       grid-template-columns: 1fr 1fr;
@@ -2655,10 +2831,8 @@
     }
   }
 
-  @media (max-width: 360px) {
-    /* schermi molto stretti: nascondi la micro-riga sotto il logo per non affollare l'header */
-    .brand__tag {
-      display: none;
-    }
-  }
+  /* Nota: qui c'era una regola che nascondeva .brand__tag sotto i 360px per
+     alleggerire la testata. Ora la testata porta il lockup e non ha piu quel
+     tag, mentre .brand__tag esiste ancora nel footer: tenerla avrebbe nascosto
+     la riga sbagliata. La testata misura 92px a ogni larghezza. */
 }
