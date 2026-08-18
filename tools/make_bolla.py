@@ -18,10 +18,16 @@ OUT = ROOT / "assets" / "img" / "bolla"
 # (slug, pagina, (x0,y0,x1,y1) frazioni pagina, widths)
 JOBS = [
     ("dusk-garden",     2,  (0.050, 0.070, 0.950, 0.528), (480, 960, 1440)),
-    ("costa",           4,  (0.015, 0.025, 0.475, 0.500), (480, 720)),
+    # V14: "costa" e uscito. Era lo scatto bocciato dal cliente: doppia
+    # esposizione, la cupola sovrapposta alle luci della citta e i palloncini
+    # rossi tagliati a meta sul bordo. Non si sostituisce con un ritaglio
+    # qualsiasi, si toglie e basta.
     ("notte-palme",     5,  (0.510, 0.008, 0.985, 0.472), (480, 720)),
     ("glamping-aerial", 9,  (0.050, 0.070, 0.950, 0.528), (480, 960, 1440)),
-    ("tavolo",          11, (0.015, 0.505, 0.475, 0.962), (480, 720)),
+    # "tavolo" e passato alla scheda del modello 400, dove la tavola
+    # apparecchiata illustra esattamente cio che la scheda descrive. In
+    # galleria al suo posto entra l'amaca sotto la cupola specchiata.
+    ("amaca",           12, (0.550, 0.502, 0.984, 0.990), (480, 720)),
     ("vista-mare",      12, (0.510, 0.008, 0.985, 0.488), (480, 720)),
     ("suite",           13, (0.015, 0.025, 0.475, 0.498), (480, 720)),
 ]

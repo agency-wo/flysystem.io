@@ -20,20 +20,52 @@ PDF = ROOT / "assets" / "pdf" / "fly-system-bolla.pdf"
 
 # slug, pagina, box frazionario del blocco fotografico, ancoraggio verticale
 # del ritaglio 3:4 (0 = alto, 0.5 = centro, 1 = basso)
+# slug, pagina, box frazionario, ancoraggio verticale, correzione dominante
 JOBS = [
-    ("r400", 4, (0.017, 0.012, 0.455, 0.496), 0.5),
+    # V14: la 400 in catalogo ha due foto e nessuna delle due si puo usare. La
+    # prima e lo scatto che il cliente ha bocciato (doppia esposizione, cupola
+    # sovrapposta alle luci della citta); la seconda ha l'insegna di un altro
+    # marchio ben leggibile al centro. Qui va la tavola apparecchiata di p11,
+    # che e anche cio che descrive la scheda: "dining raccolto, per tavoli da
+    # 4 a 6".
+    ("r400", 11, (0.017, 0.502, 0.451, 0.990), 0.5, None),
     # la cupola sta nella meta alta: centrando, il ritaglio si riempiva di prato
-    ("r500", 5, (0.551, 0.012, 0.989, 0.496), 0.0),
-    ("r650", 6, (0.017, 0.012, 0.455, 0.496), 0.5),
+    ("r500", 5, (0.551, 0.012, 0.989, 0.496), 0.0, None),
+    # interni illuminati a LED verdi: la dominante e cosi forte da far sembrare
+    # sporca la foto. Si neutralizza, non si stilizza.
+    ("r650", 6, (0.017, 0.012, 0.455, 0.496), 0.5, 0.55),
     # la foto della 800 in catalogo e un montaggio in corso: qui va una sala
     # vera della stessa linea, il dato esatto lo porta comunque la riga
-    ("r800", 5, (0.551, 0.504, 0.989, 0.992), 0.5),
-    ("r1000", 7, (0.518, 0.090, 0.928, 0.730), 0.2),
-    ("g500", 9, (0.066, 0.534, 0.491, 0.862), 0.5),
-    # in basso c'e il bordo del letto: si alza il ritaglio sulla vista
-    ("g400", 12, (0.551, 0.012, 0.983, 0.496), 0.2),
-    ("suite", 13, (0.017, 0.012, 0.455, 0.496), 0.5),
+    ("r800", 5, (0.551, 0.504, 0.989, 0.992), 0.5, None),
+    ("r1000", 7, (0.518, 0.090, 0.928, 0.730), 0.2, None),
+    ("g500", 9, (0.066, 0.534, 0.491, 0.862), 0.5, None),
+    # era ancorata a 0.2 e il ritaglio si riempiva del cuscino blu in primo
+    # piano: alzandolo a 0 restano la pannellatura e la vista sul mare
+    ("g400", 12, (0.551, 0.012, 0.983, 0.496), 0.0, None),
+    ("suite", 13, (0.017, 0.012, 0.455, 0.496), 0.5, None),
 ]
+
+
+def neutralizza(im, forza):
+    """Riduce una dominante di colore verso il grigio del mondo.
+
+    Serve solo dove l'illuminazione della scena falsa il prodotto (i LED verdi
+    della 650). La forza e limitata perche sono installazioni reali: correggere
+    troppo significherebbe mostrare un prodotto che non esiste.
+    """
+    from PIL import ImageStat
+    st = ImageStat.Stat(im)
+    r, g, b = st.mean[:3]
+    grigio = (r + g + b) / 3
+    fr, fg, fb = grigio / r, grigio / g, grigio / b
+    # interpola fra "nessuna correzione" (1.0) e la correzione piena
+    fr, fg, fb = [1 + (f - 1) * forza for f in (fr, fg, fb)]
+    print(f"      dominante corretta: R{fr:.3f} G{fg:.3f} B{fb:.3f}")
+    return im.point(
+        [min(255, round(i * fr)) for i in range(256)]
+        + [min(255, round(i * fg)) for i in range(256)]
+        + [min(255, round(i * fb)) for i in range(256)]
+    )
 
 WIDTHS = (240, 480)
 
@@ -41,7 +73,7 @@ WIDTHS = (240, 480)
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     doc = fitz.open(PDF)
-    for slug, page, box, anchor in JOBS:
+    for slug, page, box, anchor, corr in JOBS:
         pg = doc[page - 1]
         z = 2600 / max(pg.rect.width, pg.rect.height)
         pix = pg.get_pixmap(matrix=fitz.Matrix(z, z))
@@ -58,6 +90,8 @@ def main():
             target_w = round(im.height * 3 / 4)
             left = round((im.width - target_w) / 2)
             im = im.crop((left, 0, left + target_w, im.height))
+        if corr:
+            im = neutralizza(im, corr)
         for w in WIDTHS:
             h = round(im.height * w / im.width)
             rs = im.resize((w, h), Image.LANCZOS)

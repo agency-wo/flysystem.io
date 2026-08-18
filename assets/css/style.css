@@ -82,22 +82,32 @@
     --paper-dim: color-mix(in srgb, var(--paper) 74%, transparent);
     --error: #a33a24;
 
-    /* tipografia: una sola famiglia, titoli in Light */
+    /* tipografia: una sola famiglia, titoli in Light.
+
+       Scala rialzata in V14. Misurando il sito contro il riferimento allo
+       stesso viewport (1907px) il titolo DI SEZIONE del riferimento risultava
+       piu grande del nostro HERO: 72px contro 68. Il sito non era disegnato
+       male, era timido, e ogni correzione puntuale continuava ad arrivare
+       come "non meglio" perche il problema era la scala, non il dettaglio.
+       Il corpo del testo NON sale: alzarlo insieme ai titoli annullerebbe il
+       contrasto che stiamo cercando. */
     --f-display: "Switzer", "Switzer Fallback", system-ui, sans-serif;
     --f-text: "Switzer", "Switzer Fallback", system-ui, sans-serif;
-    --fs-hero: clamp(2.3rem, 5.2vw, 4.25rem);
-    --fs-h2: clamp(1.8rem, 3.8vw, 2.875rem);
+    --fs-hero: clamp(2.5rem, 6.4vw, 5.5rem);
+    --fs-h2: clamp(2rem, 5vw, 4.25rem);
     --fs-h3: clamp(1.25rem, 2vw, 1.625rem);
     --fs-body: 1.0625rem;
     --fs-fine: 0.875rem;
     --fs-eyebrow: 0.78rem;
 
     /* ritmo */
-    --sect: clamp(96px, 12vw, 184px);
+    --sect: clamp(104px, 13vw, 220px);
     --sect-s: clamp(64px, 8vw, 116px);
     --gap: 24px;
     --pad-x: clamp(20px, 5vw, 72px);
-    --wrap-max: 1360px;
+    /* 1360 lasciava 273px di margine morto per lato a 1907px, contro i 30px
+       del riferimento. La colonna di lettura NON segue: vedi --measure. */
+    --wrap-max: 1600px;
 
     /* misure di colonna: due sole, dichiarate. Prima ne convivevano quattro
        scollegate (820px, 620px, 34em, 21em) e la pagina cambiava larghezza
@@ -310,12 +320,20 @@
     letter-spacing: -0.022em;
   }
 
+  /* V14: i titoli di sezione vanno in maiuscolo come il riferimento. Tre cose
+     cambiano insieme, e vanno cambiate insieme o il risultato e sbagliato: la
+     tracciatura passa da negativa a leggermente positiva (la negativa serviva
+     al minuscolo, sulle maiuscole impasta), l'interlinea si chiude perche le
+     maiuscole non hanno discendenti, e il maiuscolo arriva dal CSS e non
+     dall'HTML, cosi sorgente e lettori di schermo conservano la
+     capitalizzazione vera. L'hero (.h-display) resta minuscolo col corsivo. */
   .h2 {
     font-family: var(--f-display);
     font-weight: 300;
     font-size: var(--fs-h2);
-    line-height: 1.12;
-    letter-spacing: -0.022em;
+    line-height: 1.04;
+    text-transform: uppercase;
+    letter-spacing: 0.012em;
   }
 
   .h3 {
@@ -327,8 +345,7 @@
 
   /* enfasi selettiva in corsivo, stessa famiglia e stesso colore del testo:
      il 400 corsivo tiene contro il 300 tondo senza sembrare un altro font */
-  .h-display em,
-  .h2 em {
+  .h-display em {
     font-family: var(--f-display);
     font-style: italic;
     font-weight: 400;
@@ -350,6 +367,14 @@
      solo quella. */
   .h2 + .lead {
     margin-top: 20px;
+  }
+
+  /* Il riferimento mette in neretto il nome del prodotto dentro il paragrafo,
+     non in corsivo. Serve il colore pieno: .lead vive in --fg-soft e un
+     neretto su testo attenuato non si stacca. */
+  .lead strong {
+    font-weight: 500;
+    color: var(--fg);
   }
 
   .body-max {
@@ -404,18 +429,12 @@
 
   /* ---- didascalia figura ---- */
 
+  /* V14: via i numeri di figura, resta il nome della cosa. Il flex e il gap
+     servivano solo a staccare "Fig. 02" dal testo, e con loro se ne va anche
+     .fig b, che era la regola di quel numero. */
   .fig {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
     margin-top: var(--fig-gap);
     font-size: 0.8rem;
-    font-variant-numeric: tabular-nums;
-    color: var(--fg-muted);
-  }
-
-  .fig b {
-    font-weight: 500;
     color: var(--fg-muted);
   }
 
@@ -1857,14 +1876,39 @@
     letter-spacing: 0.14em;
   }
 
-  /* ---- sezione Bolla (anteprima) ---- */
+  /* ---- griglia a vivo ----
 
-  .bolla-feature__grid {
+     Il riferimento appoggia il testo a sinistra e lascia la foto uscire fino
+     al bordo della finestra. Le colonne sono nominate invece di usare 100vw:
+     100vw comprende la barra di scorrimento e produce overflow orizzontale su
+     desktop, che e esattamente cio che il gate di verifica vieta. */
+
+  .bleed-grid {
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(40px, 6vw, 104px);
+    grid-template-columns:
+      [full-start] minmax(var(--pad-x), 1fr)
+      [content-start] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.62))
+      [mid] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.38))
+      [content-end] minmax(var(--pad-x), 1fr) [full-end];
     align-items: center;
   }
+
+  .bleed-grid__testo {
+    grid-column: content-start / mid;
+    padding-inline-end: clamp(28px, 4vw, 72px);
+  }
+
+  .bleed-grid__foto {
+    grid-column: mid / full-end;
+    margin: 0;
+    /* La foto tocca il bordo destro della finestra, e l'animazione di ingresso
+       parte da scale 1.03: su 779 px sono ~12 px che finivano oltre il bordo e
+       aprivano una barra di scorrimento orizzontale al primo caricamento.
+       Il ritaglio va qui, sul contenitore che sta sul bordo. */
+    overflow: clip;
+  }
+
+  /* ---- sezione Bolla (anteprima) ---- */
 
   .dome-fig {
     margin: 0;
@@ -1877,13 +1921,21 @@
     display: block;
   }
 
+  /* Le fotografie delle bolle vengono da un catalogo le cui immagini sorgente
+     arrivano al massimo a 344x543 px: ingrandirle oltre il riquadro attuale
+     le sgranerebbe, ed e proprio la morbidezza che il cliente legge come
+     "brutto". Il rapporto e fissato qui, il tetto in vh non serve piu. */
   .dome-fig img {
-    max-block-size: 66vh;
+    aspect-ratio: 5 / 6;
     object-fit: cover;
+    /* le cupole stanno nella fascia alta dello scatto: centrando, il ritaglio
+       si riempiva di prato */
+    object-position: 50% 32%;
   }
 
+  /* .fig non e piu un flex (V14): il centraggio torna a essere tipografico */
   .dome-fig .fig {
-    justify-content: center;
+    text-align: center;
     margin-top: var(--fig-gap);
   }
 
@@ -2417,19 +2469,33 @@
     display: block;
   }
 
-  .modello__num {
+  /* V14: la misura era stampata due volte per scheda, e la prima volta a
+     0,72rem, piu piccola del testo corrente. Il catalogo del cliente fa
+     l'opposto (pagina 6: il "650" e l'elemento piu grande della pagina), e il
+     riferimento pure. Etichetta piccola sopra, numero grande sotto, una volta
+     sola. */
+  .modello__nome {
+    display: flex;
+    flex-direction: column;
+    margin-top: 4px;
+  }
+
+  .modello__eti {
     font-size: 0.72rem;
     font-weight: 500;
     letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--fg-muted);
-    font-variant-numeric: tabular-nums;
   }
 
-  .modello__nome {
-    font-size: 1.25rem;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    margin-top: 6px;
+  .modello__num {
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    margin-top: 10px;
   }
 
   .modello__desc {
@@ -2687,9 +2753,28 @@
   /* ---- responsive pagine ---- */
 
   @media (max-width: 960px) {
-    .bolla-feature__grid,
     .chi__grid {
       grid-template-columns: 1fr;
+    }
+
+    /* Sotto i 960 la griglia a vivo diventa una colonna sola e la fotografia
+       passa a tutta larghezza: a due colonne su un telefono il titolo si
+       spezzava una parola per riga e la foto si riduceva a una striscia. */
+    .bleed-grid {
+      grid-template-columns:
+        [full-start] var(--pad-x)
+        [content-start] minmax(0, 1fr)
+        [content-end] var(--pad-x) [full-end];
+      row-gap: clamp(32px, 7vw, 56px);
+    }
+
+    .bleed-grid__testo {
+      grid-column: content-start / content-end;
+      padding-inline-end: 0;
+    }
+
+    .bleed-grid__foto {
+      grid-column: full-start / full-end;
     }
 
     .facts {
