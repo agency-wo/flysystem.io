@@ -12,7 +12,7 @@ from pathlib import Path
 
 import fitz
 import pillow_avif  # noqa: F401
-from PIL import Image
+from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).parent.parent
 OUT = ROOT / "assets" / "img" / "bolla" / "modelli"
@@ -67,12 +67,12 @@ def neutralizza(im, forza):
         + [min(255, round(i * fb)) for i in range(256)]
     )
 
-WIDTHS = (240, 480)
+WIDTHS = (240, 480, 800)
 
 # La suite non e piu una miniatura: dopo V14 apre un blocco a vivo largo circa
 # 620 px, dove il file da 480 veniva stirato. Solo per lei serve una misura in
 # piu. Oltre i 720 non si va: la sorgente in catalogo e 344x543.
-WIDTHS_EXTRA = {"suite": (240, 480, 720)}
+WIDTHS_EXTRA = {}
 
 
 def main():
@@ -100,9 +100,10 @@ def main():
         for w in WIDTHS_EXTRA.get(slug, WIDTHS):
             h = round(im.height * w / im.width)
             rs = im.resize((w, h), Image.LANCZOS)
-            rs.save(OUT / f"{slug}-{w}.avif", quality=60)
-            rs.save(OUT / f"{slug}-{w}.webp", quality=78, method=6)
-            rs.save(OUT / f"{slug}-{w}.jpg", quality=80, optimize=True, progressive=True)
+            rs = rs.filter(ImageFilter.UnsharpMask(radius=1.0, percent=55, threshold=3))
+            rs.save(OUT / f"{slug}-{w}.avif", quality=78)
+            rs.save(OUT / f"{slug}-{w}.webp", quality=84, method=6)
+            rs.save(OUT / f"{slug}-{w}.jpg", quality=86, optimize=True, progressive=True)
         print(f"  {slug}: p{page} -> {im.size}")
 
 

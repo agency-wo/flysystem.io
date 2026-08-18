@@ -1893,8 +1893,8 @@
     display: grid;
     grid-template-columns:
       [full-start] minmax(var(--pad-x), 1fr)
-      [content-start] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.62))
-      [mid] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.38))
+      [content-start] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.67))
+      [mid] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.33))
       [content-end] minmax(var(--pad-x), 1fr) [full-end];
     align-items: center;
   }
@@ -1910,8 +1910,8 @@
   .bleed-grid--sx {
     grid-template-columns:
       [full-start] minmax(var(--pad-x), 1fr)
-      [mid] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.38))
-      [content-start] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.62))
+      [mid] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.33))
+      [content-start] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.67))
       [content-end] minmax(var(--pad-x), 1fr) [full-end];
   }
 
@@ -2635,12 +2635,12 @@
     aspect-ratio: 3 / 2;
   }
 
-  /* l'ultima figura chiude la griglia a tutta larghezza: finale editoriale
-     invece del buco che restava in basso a destra */
-  .bolla-gallery figure:last-child {
-    grid-column: 1 / -1;
-    aspect-ratio: 21 / 9;
-  }
+  /* V15: tolto il finale a tutta larghezza. Assegnava la larghezza massima
+     della pagina all'ultima figura qualunque essa fosse, e cioe, dopo V14,
+     alla fotografia con la sorgente peggiore: un file da 710 px reso a
+     1296 css, x3,65, il caso peggiore di tutto il sito. Con quattro figure
+     (2+1 / 1+2) la griglia si chiude da sola senza buchi e senza bisogno di
+     un finale speciale. */
 
   .bolla-gallery img {
     inline-size: 100%;
@@ -2860,8 +2860,7 @@
       aspect-ratio: 4 / 5;
     }
 
-    .bolla-gallery .g-wide,
-    .bolla-gallery figure:last-child {
+    .bolla-gallery .g-wide {
       grid-column: span 2;
     }
   }
