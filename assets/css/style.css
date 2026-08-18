@@ -1507,15 +1507,21 @@
 
   /* ---- intestazione di sezione (eyebrow + titolo sfalsato) ---- */
 
+  /* Il tetto era 21em, ma "em" qui vale sul corpo del testo (17px), quindi
+     357 px: una misura decisa quando il titolo stava a 46 px. Portato a 68 px
+     e in maiuscolo, gli stessi titoli si impilavano su quattro o cinque righe
+     strette. Il riferimento ne usa due su circa 890 px. Il tetto passa quindi
+     a una misura fissa in rem, e la prosa di supporto resta stretta per conto
+     suo, altrimenti seguirebbe il titolo. */
   .sect-head {
     display: grid;
     gap: 18px;
-    max-width: 21em;
+    max-width: 56rem;
     margin-bottom: clamp(40px, 6vw, 72px);
   }
 
-  .sect-head .h2 {
-    max-width: 16em;
+  .sect-head > p:not(.eyebrow) {
+    max-width: var(--measure);
   }
 
   .sect-head--wide {
@@ -1896,6 +1902,26 @@
   .bleed-grid__testo {
     grid-column: content-start / mid;
     padding-inline-end: clamp(28px, 4vw, 72px);
+  }
+
+  /* Variante speculare: la foto esce a sinistra. Serve a far alternare il lato
+     scendendo nella pagina, come fa il riferimento: con tutte le sezioni
+     allineate allo stesso margine lo scorrimento diventa una ripetizione. */
+  .bleed-grid--sx {
+    grid-template-columns:
+      [full-start] minmax(var(--pad-x), 1fr)
+      [mid] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.38))
+      [content-start] minmax(0, calc((var(--wrap-max) - var(--pad-x) * 2) * 0.62))
+      [content-end] minmax(var(--pad-x), 1fr) [full-end];
+  }
+
+  .bleed-grid--sx .bleed-grid__foto {
+    grid-column: full-start / content-start;
+  }
+
+  .bleed-grid--sx .bleed-grid__testo {
+    grid-column: content-start / content-end;
+    padding-inline: clamp(28px, 4vw, 72px) 0;
   }
 
   .bleed-grid__foto {
@@ -2445,6 +2471,18 @@
     gap: clamp(28px, 3.4vw, 48px);
   }
 
+  /* La linea ristorazione ha cinque misure: con auto-fit ne entravano quattro
+     e la 1000 restava sola su una riga tutta sua. A cinque colonne la scheda
+     scende a circa 236 px, cioe SOTTO i 344 px della sorgente in catalogo:
+     la collezione si legge in una riga sola e per giunta piu nitida, invece
+     di ingrandire una fotografia che non lo regge. */
+  @media (min-width: 1100px) {
+    .modelli--cinque {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: clamp(20px, 2vw, 30px);
+    }
+  }
+
   /* la linea glamping ha due sole voci: non devono allargarsi a tutta riga */
   .modelli--due {
     grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 400px));
@@ -2530,22 +2568,10 @@
 
   /* ---- le bolle collegate (suite con bagno) ---- */
 
-  .collegate {
-    display: grid;
-    grid-template-columns: 0.9fr 1fr;
-    gap: clamp(28px, 5vw, 72px);
-    align-items: center;
-  }
-
-  .collegate__foto {
-    margin: 0;
-    overflow: hidden;
-  }
-
   .collegate__foto img {
     inline-size: 100%;
     block-size: auto;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 5 / 6;
     object-fit: cover;
     display: block;
   }
@@ -2777,6 +2803,17 @@
       grid-column: full-start / full-end;
     }
 
+    .bleed-grid--sx {
+      grid-template-columns:
+        [full-start] var(--pad-x)
+        [content-start] minmax(0, 1fr)
+        [content-end] var(--pad-x) [full-end];
+    }
+
+    .bleed-grid--sx .bleed-grid__testo {
+      padding-inline: 0;
+    }
+
     .facts {
       grid-template-columns: 1fr 1fr;
     }
@@ -2795,17 +2832,6 @@
     .video-frame {
       max-width: 300px;
       margin-inline: auto;
-    }
-  }
-
-  @media (max-width: 860px) {
-    /* la suite collegata passa a colonna: la foto sopra, i dati sotto */
-    .collegate {
-      grid-template-columns: 1fr;
-    }
-
-    .collegate__foto {
-      max-width: 420px;
     }
   }
 

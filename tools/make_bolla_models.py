@@ -69,6 +69,11 @@ def neutralizza(im, forza):
 
 WIDTHS = (240, 480)
 
+# La suite non e piu una miniatura: dopo V14 apre un blocco a vivo largo circa
+# 620 px, dove il file da 480 veniva stirato. Solo per lei serve una misura in
+# piu. Oltre i 720 non si va: la sorgente in catalogo e 344x543.
+WIDTHS_EXTRA = {"suite": (240, 480, 720)}
+
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
@@ -92,7 +97,7 @@ def main():
             im = im.crop((left, 0, left + target_w, im.height))
         if corr:
             im = neutralizza(im, corr)
-        for w in WIDTHS:
+        for w in WIDTHS_EXTRA.get(slug, WIDTHS):
             h = round(im.height * w / im.width)
             rs = im.resize((w, h), Image.LANCZOS)
             rs.save(OUT / f"{slug}-{w}.avif", quality=60)
