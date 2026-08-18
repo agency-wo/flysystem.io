@@ -2814,14 +2814,23 @@
       padding-inline: 0;
     }
 
+    /* Serve la stessa specificita della regola da desktop
+       (.bleed-grid--sx .bleed-grid__foto): senza, quella vinceva anche qui e
+       la foto restava larga quanto il solo margine, una scheggia da 20 px
+       appoggiata sopra il testo. */
+    .bleed-grid--sx .bleed-grid__foto {
+      grid-column: full-start / full-end;
+    }
+
     .facts {
       grid-template-columns: 1fr 1fr;
     }
 
-    .dome-fig {
-      max-width: 420px;
-      margin-inline: auto;
-    }
+    /* Il tetto di 420px centrato serviva alla vecchia impaginazione a due
+       colonne. Ora .dome-fig e anche .bleed-grid__foto e deve andare da bordo
+       a bordo: sopra i 414px quel tetto la riportava al centro, larga meno di
+       un terzo dello schermo. Sotto i 414 non si notava perche lo schermo era
+       gia piu stretto di 420. */
   }
 
   @media (max-width: 960px) {

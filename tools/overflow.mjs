@@ -1,6 +1,15 @@
-// Matrice di overflow orizzontale: tutte le pagine per tutte le larghezze,
-// riusando un solo browser. Il ciclo che lanciava shot.mjs una volta per
-// combinazione impiegava oltre due minuti per 35 controlli.
+// Matrice di controlli di impaginazione: tutte le pagine per tutte le
+// larghezze, riusando un solo browser. Il ciclo che lanciava shot.mjs una
+// volta per combinazione impiegava oltre due minuti per 35 controlli.
+//
+// Due controlli distinti:
+//   1. overflow orizzontale del documento (chi sfora, ignorando i discendenti
+//      gia tagliati da un antenato);
+//   2. le foto a vivo sono davvero a vivo. Serve perche una foto ridotta a una
+//      scheggia di 20 px NON produce overflow e passava il primo controllo:
+//      e successo davvero, la regola da desktop .bleed-grid--sx
+//      .bleed-grid__foto batteva per specificita l'override da telefono e la
+//      foto restava larga quanto il margine, sovrapposta al testo.
 //
 // uso: node overflow.mjs [larghezze separate da virgola]
 import { chromium } from "playwright-core";
@@ -46,8 +55,20 @@ for (const f of pages) {
       }
       return out;
     });
+    const vivo = await page.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const guai = [];
+      document.querySelectorAll(".bleed-grid__foto").forEach((el) => {
+        const r = el.getBoundingClientRect();
+        const tocca = r.left <= 1 || r.right >= vw - 1;
+        if (r.width < vw * 0.3) guai.push(`foto-a-vivo larga ${Math.round(r.width)}px su ${vw}`);
+        else if (!tocca) guai.push(`foto-a-vivo non tocca il bordo (${Math.round(r.left)}..${Math.round(r.right)})`);
+      });
+      return guai;
+    });
     await page.close();
-    if (bad.length) { rotti++; riga.push(`${w}:ROTTO ${bad.join(" ")}`); }
+    const tutti = [...bad, ...vivo];
+    if (tutti.length) { rotti++; riga.push(`${w}:ROTTO ${tutti.join(" ")}`); }
     else riga.push(`${w}:ok`);
   }
   console.log(`  ${f.padEnd(16)} ${riga.join("  ")}`);
