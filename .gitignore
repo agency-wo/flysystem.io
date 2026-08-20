@@ -10,3 +10,6 @@ __pycache__/
 # file di sistema
 Thumbs.db
 .DS_Store
+
+# ingranditore Real-ESRGAN: 43 MB di binario e modelli, si riscarica (vedi README)
+tools/bin/

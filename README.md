@@ -48,6 +48,45 @@ npx serve .
 - **Deploy**: GitHub Pages dal branch main (repo agency-wo/flysystem.io). Escludere `tools/` e `_sorgenti/` da altri hosting.
 - **Header/footer**: duplicati nelle 5 pagine, marcati `<!-- shared: ... keep in sync -->`. Modificarli ovunque insieme.
 
+## Ingrandimento delle fotografie
+
+Quasi tutte le fotografie del sito nascono piccole: gli scatti del cliente sono da telefono
+(1040-1600 px) e il catalogo Bolla ha raster incorporati da 344-691 px. Vengono ingrandite in
+locale con **Real-ESRGAN**, sulla GPU, senza caricare niente su servizi esterni.
+
+Il binario e i modelli stanno in `tools/bin/` e **non sono nel repo** (43 MB). Per rimetterli:
+
+```bash
+curl -L -o rev.zip https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesrgan-ncnn-vulkan-20220424-windows.zip
+# estrarre in tools/bin/ ; serve anche realesrnet-x4plus, che sta solo nel pacchetto vecchio:
+curl -L -o old.zip https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.3.0/realesrgan-ncnn-vulkan-20211212-windows.zip
+# da old.zip copiare models/realesrnet-x4plus.{bin,param} in tools/bin/models/
+```
+
+Due modelli, e la scelta non e stilistica:
+
+- **`realesrgan-x4plus`** (generativo) per cupole, pergole, architettura: li la texture
+  ricostruita e erba, cielo e vetro, non una specifica di prodotto.
+- **`realesrnet-x4plus`** (fedele, senza perdita GAN) per porte, gres e copertine, dove **la
+  finitura E il prodotto**. Verificato sui provini: su una porta laccata i due modelli danno
+  lo stesso risultato, e sul pavimento in gres il generativo **leviga la venatura del marmo**
+  mentre il fedele la conserva. Qui il fedele non e una rinuncia, e la scelta migliore.
+
+```bash
+python tools/enhance.py --tutto            # tutta la tabella JOBS
+python tools/enhance.py --tutto bolla/     # solo un ramo
+python tools/sync_srcset.py --pulisci      # allinea le srcset ai file su disco
+node tools/nitidezza.mjs                   # gate: nessuna immagine sotto-risoluta
+```
+
+**Si parte sempre dal raster originale**, non da cio che gia serviamo: `enhance.py` estrae
+l'immagine incorporata nel PDF (`pdf:<catalogo>:<xref>`), cosi il modello lavora su pixel veri
+e non sopra un nostro ingrandimento. Il ritaglio viene ritrovato da solo confrontando con
+l'immagine attuale, quindi l'inquadratura approvata non cambia.
+
+**Dopo ogni ingrandimento va riguardato il provino**: alzando la risoluzione possono diventare
+leggibili insegne e marchi di altre aziende che prima non lo erano.
+
 ## Dati in attesa di conferma (placeholder nel sito)
 
 1. P.IVA per il footer legale
