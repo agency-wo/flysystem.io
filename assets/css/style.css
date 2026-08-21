@@ -1603,9 +1603,18 @@
   /* parallasse fotografica al passaggio (CSS puro, progressivo, gated) */
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .hero-band,
-      .photo-band,
-      .cat-lead {
+      /* Il ritaglio va sul contenitore della SOLA fotografia, non sulla
+         figure intera: la figure comprende anche la didascalia, quindi
+         l'immagine ingrandita del 12% dalla parallasse finiva per coprirla.
+         Misurato prima della correzione: fino a 30 px di sovrapposizione su
+         una didascalia alta 21, cioe nascosta del tutto.
+         Il picture e display:contents in tutto il sito (serve a far trattare
+         l'img come se fosse figlia diretta): qui torna a essere un blocco
+         proprio per poter ritagliare. */
+      .hero-band > picture,
+      .photo-band > picture,
+      .cat-lead > picture {
+        display: block;
         overflow: clip;
       }
 
