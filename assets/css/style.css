@@ -1560,8 +1560,12 @@
 
   /* ---- hero home: testo sobrio + fascia fotografica a tutta larghezza ---- */
 
+  /* La fotografia apre la pagina, quindi niente padding sopra: la fascia
+     parte subito sotto la testata, che e sticky e occupa il suo spazio nel
+     flusso, per cui non si sovrappone. Il padding che stava sopra passa
+     sotto, a staccare il testo dalla sezione scura che segue. */
   .hero {
-    padding-block: clamp(48px, 8vh, 104px) 0;
+    padding-block: 0 clamp(24px, 4vh, 56px);
   }
 
   .hero h1 {
@@ -1580,8 +1584,9 @@
     margin-top: 30px;
   }
 
+  /* Margine sotto e non sopra: la fascia ora precede il testo. */
   .hero-band {
-    margin: clamp(48px, 7vw, 88px) 0 0;
+    margin: 0 0 clamp(40px, 6vw, 72px);
   }
 
   .hero-band img {
