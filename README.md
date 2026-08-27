@@ -47,6 +47,7 @@ npx serve .
 - **Cataloghi porte in arrivo**: il cliente invierà nuove edizioni; sostituire il file in `assets/pdf/` mantenendo lo stesso nome, aggiornare pagine/MB sulla card e rigenerare la copertina con `tools/make_covers.py`.
 - **Deploy**: GitHub Pages dal branch main (repo agency-wo/flysystem.io). Escludere `tools/` e `_sorgenti/` da altri hosting.
 - **Header/footer**: duplicati nelle 5 pagine, marcati `<!-- shared: ... keep in sync -->`. Modificarli ovunque insieme.
+- **Cache e impronte**: `style.css` e `main.js` sono citati con `?v=<8 cifre>`, l'impronta del contenuto. Serve perche la CSS viaggia con `Cache-Control: max-age=14400` (4 ore) e senza impronta una modifica resta invisibile ai visitatori per tutto quel tempo. **Dopo ogni modifica a CSS o JS: `python tools/versiona.py`.** Con `--check` esce con 1 se un'impronta e vecchia, e `--hook` installa un pre-commit che fa quel controllo da solo. I font non si versionano di proposito: li cita anche `@font-face`, e versionarne uno solo dei due li farebbe scaricare due volte.
 
 ## Ingrandimento delle fotografie
 
