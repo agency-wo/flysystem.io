@@ -2051,7 +2051,7 @@
     max-width: 30em;
   }
 
-  /* ---- professionisti (registro editoriale sfalsato, niente card) ---- */
+  /* ---- professionisti (registro editoriale, niente card) ---- */
 
   .prof-grid {
     display: grid;
@@ -2074,15 +2074,13 @@
     max-width: 26em;
   }
 
-  @media (min-width: 641px) {
-    .prof-grid {
-      padding-bottom: clamp(28px, 4vw, 60px);
-    }
-
-    .prof-grid > article:nth-child(even) {
-      translate: 0 clamp(28px, 4vw, 60px);
-    }
-  }
+  /* Lo sfalsamento della colonna pari e stato tolto su richiesta del cliente:
+     i quattro filetti cadevano a quattro altezze diverse. Ora ogni riga della
+     griglia allinea i suoi due filetti, e il padding-bottom che stava qui se
+     ne va con lui: serviva solo a fare spazio alla colonna spinta in basso.
+     Da notare, lo sfalsamento usava `translate`, la stessa proprieta animata
+     da .rv, per cui gli articoli pari restavano fermi a 51 px e non si
+     rivelavano mai davvero. Ora si rivelano tutti e quattro allo stesso modo. */
 
   /* ---- strip cataloghi (teaser) ---- */
 
