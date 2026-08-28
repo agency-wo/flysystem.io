@@ -896,6 +896,15 @@
     color: color-mix(in srgb, var(--paper) 58%, transparent);
   }
 
+  /* Il credito sta dentro una frase, non in un elenco: senza sottolineatura resta
+     distinguibile solo per colore (WCAG 1.4.1). Stessa sottolineatura dei link
+     editoriali nel contenuto, per coerenza. */
+  .site-foot__legal span a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
   /* ---- indice editoriale (righe prodotto) ---- */
 
   .index {

@@ -88,6 +88,43 @@ l'immagine attuale, quindi l'inquadratura approvata non cambia.
 **Dopo ogni ingrandimento va riguardato il provino**: alzando la risoluzione possono diventare
 leggibili insegne e marchi di altre aziende che prima non lo erano.
 
+## SEO e dati strutturati
+
+Ogni pagina porta un blocco `application/ld+json` con un `@graph`. La scheda dell'azienda e
+definita una volta sola, con `@id` `<base>#business`, e tutto il resto la cita per riferimento:
+cosi non puo' nascere il caso di un `@id` citato e mai definito.
+
+| Pagina | Nodi |
+|---|---|
+| `index.html` | `LocalBusiness` |
+| `bolla.html` | `LocalBusiness`, `BreadcrumbList`, `ItemList` con i **7 modelli** come `Product` |
+| `cataloghi.html` | `LocalBusiness`, `BreadcrumbList` |
+| `contatti.html` | `LocalBusiness`, `BreadcrumbList`, `ContactPage` |
+
+I `Product` dei modelli Bolla sono generati leggendo `bolla.html`, non trascritti a mano: nome,
+descrizione, foto e le voci del `<dl>` (Diametro, Superficie, Coperti/Ospiti) diventano
+`additionalProperty`. Se un modello cambia in pagina, il JSON-LD va rigenerato perche' non si
+disallinei. **Nessun `Offer`**: sul sito non compare un prezzo, quindi non se ne dichiara uno.
+Fuori anche `geo`, `openingHours` e `vatID`, che sono fra i dati ancora in attesa qui sotto.
+
+`sitemap.xml` elenca le 4 pagine indicizzabili (`404.html` resta fuori, ha gia' `noindex`).
+`robots.txt` c'e' ma **oggi non fa nulla**: un robots.txt viene letto solo dalla radice di un
+dominio, e il sito risponde da una sottocartella. Diventa effettivo al passaggio al dominio proprio.
+
+### Passaggio al dominio proprio
+
+Canonical, `og:url` e ogni URL assoluto nei dati strutturati usano la stessa identica stringa,
+70 volte su 6 file. Il cambio e' una sostituzione sola:
+
+```bash
+grep -rl 'https://minarankstudio.com/flysystem.io/' *.html sitemap.xml robots.txt \
+  | xargs sed -i 's|https://minarankstudio\.com/flysystem\.io/|https://flysystem.io/|g'
+python tools/versiona.py     # le impronte non cambiano, ma il check resta verde
+```
+
+Da fare **quando il dominio serve davvero questo sito**, non prima: oggi `flysystem.io` ospita il
+vecchio sito Hostinger, e puntare li' i canonical direbbe a Google di preferire quella pagina.
+
 ## Dati in attesa di conferma (placeholder nel sito)
 
 1. P.IVA per il footer legale

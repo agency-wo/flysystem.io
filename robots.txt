@@ -1,0 +1,9 @@
+# Fly System Srls
+# Nota: un robots.txt viene letto solo dalla radice di un dominio. Finche' il sito
+# risponde da una sottocartella questo file resta inerte: diventa effettivo quando
+# il sito passa al proprio dominio. La sitemap invece e' gia' valida cosi' com'e'.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://minarankstudio.com/flysystem.io/sitemap.xml
