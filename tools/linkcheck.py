@@ -1,7 +1,9 @@
 import re
 from pathlib import Path
 
-root = Path(r"C:\Users\aceto\OneDrive\Desktop\web and apps\flysystem.io")
+# Ricavata dalla posizione dello script: un percorso assoluto scritto a mano
+# smette di funzionare appena il repo cambia cartella o macchina.
+root = Path(__file__).resolve().parent.parent
 missing = []
 for f in ["index.html", "bolla.html", "cataloghi.html", "contatti.html", "404.html"]:
     html = (root / f).read_text(encoding="utf-8")
@@ -14,6 +16,9 @@ for f in ["index.html", "bolla.html", "cataloghi.html", "contatti.html", "404.ht
             if u.startswith("assets/"):
                 urls.add(u)
     for u in sorted(urls):
-        if not (root / u).exists():
+        # La stringa di query non fa parte del nome del file: da quando
+        # versiona.py appende ?v=<impronta> a style.css e main.js, cercarli
+        # con la query attaccata li dava per mancanti a ogni esecuzione.
+        if not (root / u.split("?")[0]).exists():
             missing.append(f"{f}: {u}")
 print("\n".join(missing) if missing else "ALL ASSET REFS OK")

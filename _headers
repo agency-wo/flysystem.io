@@ -1,0 +1,43 @@
+# Intestazioni per la destinazione Cloudflare. GitHub Pages ignora questo file,
+# quindi tenerlo qui non cambia nulla finche' il sito sta li': serve gia' pronto
+# per il giorno del passaggio. Modellato su Essi/_headers, con una differenza
+# importante spiegata sotto.
+
+# I font non cambiano mai e il loro nome descrive il taglio: un peso diverso e'
+# un file diverso. Immutable significa che il browser non torna nemmeno a
+# chiedere se sono cambiati.
+/assets/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# CSS e JS QUI possono essere immutabili, al contrario di Essi: tools/versiona.py
+# appende l'impronta sha1 del contenuto all'indirizzo (style.css?v=1e52e5f2), e
+# una stringa di query e' una chiave di cache distinta. Contenuto nuovo,
+# indirizzo nuovo, quindi una cache lunga non puo' servire una copia vecchia.
+# Se un giorno si togliesse versiona.py, questa riga va tolta con lui.
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Immagini e video: lunghi ma NON immutabili. Qui i nomi sono stabili e non
+# contengono un'impronta, quindi sostituire una foto tenendo lo stesso nome deve
+# restare possibile e deve arrivare ai visitatori senza rinominarla.
+/assets/img/*
+  Cache-Control: public, max-age=2592000
+/assets/video/*
+  Cache-Control: public, max-age=2592000
+
+# I cataloghi vengono ripubblicati con lo stesso nome quando il cliente manda
+# un'edizione nuova: trenta giorni, non di piu'.
+/assets/pdf/*
+  Cache-Control: public, max-age=2592000
+
+# Le pagine cambiano quando cambia il sito e non hanno impronta nell'indirizzo,
+# quindi vanno rivalidate. must-revalidate su max-age=0 vuol dire una richiesta
+# condizionale che di norma torna 304, non un download.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
