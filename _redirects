@@ -1,9 +1,14 @@
-# Il www manda all'apex, che e' la forma canonica dichiarata in tutte le pagine.
-# Serve una regola esplicita: aggiungendo apex e www come domini personalizzati,
-# Cloudflare Pages li serve ENTRAMBI, non ne rimanda uno all'altro.
+# Nessuna regola. Il file resta per spiegare perche', cosi' nessuno le riscrive.
 #
-# Qui NON ci sono regole sulle estensioni. La versione precedente mandava /bolla
-# su /bolla.html e finiva in un ciclo infinito, perche' Pages fa gia' il
-# contrario di suo. Il sito ora dichiara gli indirizzi senza estensione e non ha
-# bisogno di nessuna regola in merito.
-https://www.flysystem.io/* https://flysystem.io/:splat 301
+# 1. IL www NON SI FA DA QUI. Questo file ha ospitato per giorni la riga
+#    `https://www.flysystem.io/* https://flysystem.io/:splat 301`, che non ha mai
+#    funzionato: **Cloudflare Pages confronta solo il percorso, mai il nome host**.
+#    Una "from" che comincia con https:// non puo' corrispondere a niente. E' una
+#    funzione di Netlify, non di Pages, e la somiglianza dei due formati la fa
+#    sembrare corretta. Verificato dal vivo: www rispondeva 200 invece che 301.
+#    Il rimando www -> apex e' ora una Redirect Rule di zona su Cloudflare.
+#
+# 2. NIENTE REGOLE SULLE ESTENSIONI. Una versione precedente mandava /bolla su
+#    /bolla.html: ciclo infinito e sito irraggiungibile, perche' Pages fa gia' il
+#    308 nel verso opposto e non e' disattivabile. Il sito dichiara gli indirizzi
+#    senza estensione e non serve nessuna regola.
