@@ -1,0 +1,9 @@
+# Il www manda all'apex, che e' la forma canonica dichiarata in tutte le pagine.
+# Serve una regola esplicita: aggiungendo apex e www come domini personalizzati,
+# Cloudflare Pages li serve ENTRAMBI, non ne rimanda uno all'altro.
+#
+# Qui NON ci sono regole sulle estensioni. La versione precedente mandava /bolla
+# su /bolla.html e finiva in un ciclo infinito, perche' Pages fa gia' il
+# contrario di suo. Il sito ora dichiara gli indirizzi senza estensione e non ha
+# bisogno di nessuna regola in merito.
+https://www.flysystem.io/* https://flysystem.io/:splat 301
