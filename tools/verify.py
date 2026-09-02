@@ -29,8 +29,13 @@ import sys
 from collections import defaultdict
 
 RADICE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PAGINE = ["index.html", "bolla.html", "cataloghi.html", "contatti.html"]
-TUTTE = PAGINE + ["404.html"]
+# L'elenco si ricava dal disco invece di stare scritto qui. Era una lista fissa,
+# e aggiungere privacy.html ha fatto fallire il check 12 con un messaggio che
+# accusava la sitemap ("solo in sitemap: privacy.html") mentre il file c'era
+# davvero: era il cancello a non saperlo. Una lista fissa dentro il controllore
+# trasforma ogni pagina nuova in un falso allarme.
+TUTTE = sorted(f for f in os.listdir(RADICE) if f.endswith(".html"))
+PAGINE = [f for f in TUTTE if f != "404.html"]
 
 problemi, avvisi = [], []
 

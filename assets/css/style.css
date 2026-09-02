@@ -2989,3 +2989,32 @@
      tag, mentre .brand__tag esiste ancora nel footer: tenerla avrebbe nascosto
      la riga sbagliata. La testata misura 92px a ogni larghezza. */
 }
+
+/* ---------- Pagina legale ----------
+   L'unico posto del sito con prosa continua: tutto il resto e' titoli, schede e
+   listini. Serve una misura di lettura, perche' a piena larghezza una riga di
+   testo legale diventa illeggibile, e aria fra le sezioni numerate. */
+.legal {
+  max-width: 38em;
+}
+.legal h2 {
+  margin-top: 2.4em;
+  margin-bottom: .5em;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+.legal h2:first-child {
+  margin-top: 0;
+}
+.legal p {
+  color: var(--fg-soft);
+  line-height: 1.7;
+  margin-bottom: .9em;
+}
+/* I link dentro la prosa si distinguono anche senza colore (WCAG 1.4.1): e' la
+   stessa ragione per cui il credito in fondo e' sottolineato. */
+.legal a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
