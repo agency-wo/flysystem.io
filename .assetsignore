@@ -1,0 +1,15 @@
+# Cosa NON deve finire sul sito pubblico.
+#
+# Il progetto Pages non e collegato a git (Git Provider: No): si pubblica a mano
+# con `wrangler pages deploy`, e quel comando carica tutta la cartella. Senza
+# questo file finirebbero online i materiali originali del cliente e un binario
+# da 43 MB. Il README lo chiedeva a parole dal primo giorno, ma niente lo
+# faceva rispettare.
+tools/
+_sorgenti/
+.wrangler/
+.git/
+README.md
+package.json
+package-lock.json
+.gitignore

@@ -45,7 +45,17 @@ npx serve .
 - **Modulo contatti**: `action` punta a `https://formsubmit.co/info@flysystemrn.it`. Al primo invio FormSubmit manda una mail di conferma da approvare. In alternativa sostituire l'endpoint (Formspree, PHP dell'hosting): è un solo attributo in `contatti.html`.
 - **Video**: il drone su bolla.html parte solo in viewport e mai con `prefers-reduced-motion` (gestito in main.js via `video[data-loop]`); il promo pergole è `preload="none"` + poster, scarica solo al tap.
 - **Cataloghi porte in arrivo**: il cliente invierà nuove edizioni; sostituire il file in `assets/pdf/` mantenendo lo stesso nome, aggiornare pagine/MB sulla card e rigenerare la copertina con `tools/make_covers.py`.
-- **Deploy**: GitHub Pages dal branch main (repo agency-wo/flysystem.io). Escludere `tools/` e `_sorgenti/` da altri hosting.
+- **Deploy**: Cloudflare Pages, progetto `flysystem`. **Non e collegato a git** (`Git Provider: No`
+  in `wrangler pages project list`): fare push su GitHub **non pubblica niente**. Si pubblica a mano:
+
+  ```bash
+  npx wrangler pages deploy . --project-name flysystem --branch main
+  ```
+
+  `.assetsignore` tiene fuori `tools/`, `_sorgenti/` e i file di progetto. Prima esisteva solo la
+  raccomandazione scritta qui, e niente la faceva rispettare: quel comando carica tutta la cartella,
+  quindi senza quel file finirebbero online i materiali originali del cliente e un binario da 43 MB.
+  Dopo ogni pubblicazione, verificare che `_sorgenti/bollafly.jpeg` e `tools/enhance.py` rispondano 404.
 - **Header/footer**: duplicati nelle 5 pagine, marcati `<!-- shared: ... keep in sync -->`. Modificarli ovunque insieme.
 - **Cache e impronte**: `style.css` e `main.js` sono citati con `?v=<8 cifre>`, l'impronta del contenuto. Serve perche la CSS viaggia con `Cache-Control: max-age=14400` (4 ore) e senza impronta una modifica resta invisibile ai visitatori per tutto quel tempo. **Dopo ogni modifica a CSS o JS: `python tools/versiona.py`.** Con `--check` esce con 1 se un'impronta e vecchia, e `--hook` installa un pre-commit che fa quel controllo da solo. I font non si versionano di proposito: li cita anche `@font-face`, e versionarne uno solo dei due li farebbe scaricare due volte.
 
