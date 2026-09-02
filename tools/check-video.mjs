@@ -108,7 +108,9 @@ for (const { page: file, label } of CASES) {
     if (mode === "autoplay-negato") await p.addInitScript(DENY);
 
     await p.goto(BASE + file, { waitUntil: "load" });
-    await p.locator("[data-video] video[data-loop]").scrollIntoViewIfNeeded();
+    // .first(): da V18 bolla.html ha DUE video in ciclo. Il locator stretto
+    // sollevava "strict mode violation" invece di controllarne uno.
+    await p.locator("[data-video] video[data-loop]").first().scrollIntoViewIfNeeded();
     await p.waitForTimeout(3000);
 
     const s = await p.evaluate(() => {
@@ -126,7 +128,7 @@ for (const { page: file, label } of CASES) {
     } else {
       report(s.paused, `${label} / ${mode}: non parte da solo, come deve`);
       report(s.btn === true, `${label} / ${mode}: il pulsante di avvio e visibile`);
-      await p.locator("[data-video] [data-play]").click();
+      await p.locator("[data-video] [data-play]").first().click();
       await p.waitForTimeout(1500);
       const after = await p.evaluate(() => {
         const v = document.querySelector("[data-video] video[data-loop]");
