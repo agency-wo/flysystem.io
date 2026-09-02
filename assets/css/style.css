@@ -1706,9 +1706,18 @@
     margin-top: var(--fig-gap);
   }
 
+  /* Due tessere, non piu tre. La pergola bianca sul terrazzo e uscita su
+     richiesta del titolare, e con lei la griglia a tre colonne: la foto larga
+     ne occupava due e la terza restava vuota. A colonna singola le due rimaste
+     si impilano, la larga sopra e la fascia del montaggio sotto.
+     Se ne sono andate con la tessera laterale le regole che esistevano solo per
+     lei: lo span 2, il 25/32 che ne pareggiava l'altezza, e un .m-wide img che
+     ripeteva il 16/10 gia dichiarato qui sotto. La classe .m-wide e sparita
+     anche dal markup, perche non le restava niente da fare; .m-band resta,
+     perche la fascia ha ancora un ritaglio suo. */
   .outdoor-mosaic {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr;
     gap: clamp(10px, 1.3vw, 18px);
     margin-top: clamp(36px, 5vw, 64px);
   }
@@ -1718,33 +1727,11 @@
     min-width: 0;
   }
 
-  .outdoor-mosaic .m-wide {
-    grid-column: span 2;
-  }
-
-  .outdoor-mosaic .m-band {
-    grid-column: 1 / -1;
-  }
-
   .outdoor-mosaic img {
     inline-size: 100%;
     block-size: auto;
     aspect-ratio: 16 / 10;
     object-fit: cover;
-  }
-
-  .outdoor-mosaic .m-wide img {
-    aspect-ratio: 16 / 10;
-  }
-
-  /* La tessera laterale sta accanto alla .m-wide, che e alta il doppio: con lo
-     stesso 16/10 restava un buco di carta sotto (258px a 1440). 25/32 pareggia
-     le due altezze entro un pixel a 1440, 1024 e 768, e la sorgente e verticale
-     quindi il ritaglio e minimo.
-     Nota: si seleziona per esclusione, non con :not([class]), perche tutte le
-     figure portano gia le classi di reveal. */
-  .outdoor-mosaic figure:not(.m-wide):not(.m-band) img {
-    aspect-ratio: 25 / 32;
   }
 
   .outdoor-mosaic .m-band img {
@@ -1830,24 +1817,12 @@
   }
 
   @media (max-width: 720px) {
-    /* Le tre foto Outdoor impilate a piena larghezza allungavano la home di
-       circa mezzo migliaio di pixel: a coppie restano leggibili e la pagina
-       si accorcia. La fascia larga resta a tutta larghezza. */
-    /* A due colonne la .m-wide le occupa entrambe e la .m-band fa 1 / -1:
-       alla tessera laterale non resta nessun compagno di riga e finiva mezza
-       larghezza accanto al vuoto. A colonna singola il ritmo torna pulito. */
+    /* La colonna singola ora e la regola di base e non piu un rimedio per il
+       piccolo schermo, quindi qui resta solo il passo piu stretto. Le altre tre
+       regole che stavano qui rimettevano in fila un mosaico a tre colonne che
+       non esiste piu, e una tessera laterale che non esiste nemmeno. */
     .outdoor-mosaic {
-      grid-template-columns: 1fr;
       gap: 10px;
-    }
-
-    .outdoor-mosaic .m-wide,
-    .outdoor-mosaic .m-band {
-      grid-column: 1 / -1;
-    }
-
-    .outdoor-mosaic figure:not(.m-wide):not(.m-band) img {
-      aspect-ratio: 16 / 10;
     }
 
     /* .outdoor-video non aveva alcuna regola sotto i breakpoint */

@@ -78,7 +78,9 @@ JOBS = [
     ("home/selezione",         "file:_sorgenti/fly8.jpeg", (480, 960, 1440, 2880), GAN, None),
     ("outdoor/montaggio",      "file:_sorgenti/perg2.jpeg", (480, 960, 1280, 2592), GAN, None),
     ("outdoor/tramonto",       "file:_sorgenti/fly2.jpeg", (480, 960, 1600, 2880), GAN, None),
-    ("outdoor/rooftop",        "file:_sorgenti/fly4.jpeg", (480, 960, 1600), GAN, None),
+    # outdoor/rooftop: tolta dal sito su richiesta del titolare.
+    # Il sorgente resta in _sorgenti/fly4.jpeg; per rimetterla servono
+    # anche il <figure> in index.html e una griglia che la ospiti.
     ("contatti/lead",          "file:_sorgenti/fly9.jpeg", (480, 960, 1440, 2400), GAN, None),
 
     # --- architettura: la nostra stessa immagine e l'originale piu grande ---

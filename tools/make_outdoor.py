@@ -1,7 +1,7 @@
 """Prepara le foto della sezione Outdoor/Pergole + poster del video promo.
 
 usage: python make_outdoor.py <sorgenti-dir> <poster-frame.png>
-output: assets/img/outdoor/{tramonto,rooftop,montaggio}-*.{avif,webp,jpg}
+output: assets/img/outdoor/{tramonto,montaggio}-*.{avif,webp,jpg}
         assets/img/home/pergole-poster.jpg
 """
 import sys
@@ -15,7 +15,9 @@ OUT = ROOT / "assets" / "img" / "outdoor"
 
 JOBS = [
     ("tramonto",  "fly2.jpeg",  (480, 960, 1600)),
-    ("rooftop",   "fly4.jpeg",  (480, 960)),
+    # rooftop (fly4.jpeg) e uscita dal sito su richiesta del titolare.
+    # Il sorgente resta fra i sorgenti; rigenerarla qui non la rimette in
+    # pagina, servono anche il <figure> in index.html e una griglia che la ospiti.
     ("montaggio", "perg2.jpeg", (480, 960, 1280)),
 ]
 
