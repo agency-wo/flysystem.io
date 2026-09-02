@@ -73,7 +73,14 @@ BASE = m.group(1) + "/"
 
 
 def url_di(nome):
-    return BASE if nome == "index.html" else BASE + nome
+    """L'indirizzo pubblico di una pagina, che NON porta l'estensione.
+
+    Cloudflare Pages risponde 308 da /bolla.html a /bolla: l'indirizzo che
+    restituisce 200 e' quello senza estensione, e la canonical deve puntare li'.
+    Puntarla al .html significherebbe dichiarare canonica una URL che rimanda
+    altrove. Il file su disco resta bolla.html: cambia l'indirizzo, non il nome.
+    """
+    return BASE if nome == "index.html" else BASE + nome[:-len(".html")]
 
 
 # ---- 1. un solo h1 ----
@@ -227,11 +234,21 @@ for n in TUTTE:
         percorso = percorso.split("?")[0]
         if not percorso:
             continue
-        if not os.path.exists(os.path.join(RADICE, percorso)):
+        # I link fra pagine sono senza estensione (vedi url_di): sul disco il
+        # file ce l'ha. "./" e' la home. Le risorse - css, js, immagini, pdf -
+        # mantengono la loro estensione e passano dal primo ramo.
+        if percorso in ("./", "."):
+            fisico = "index.html"
+        elif os.path.exists(os.path.join(RADICE, percorso)):
+            fisico = percorso
+        elif os.path.exists(os.path.join(RADICE, percorso + ".html")):
+            fisico = percorso + ".html"
+        else:
             guasto(n, "check 8: link o risorsa rotta: %s" % pulito(percorso))
-        elif frammento and percorso.endswith(".html"):
-            if 'id="%s"' % frammento not in leggi(percorso):
-                guasto(n, "check 8: frammento #%s assente in %s" % (frammento, percorso))
+            continue
+        if frammento and fisico.endswith(".html"):
+            if 'id="%s"' % frammento not in leggi(fisico):
+                guasto(n, "check 8: frammento #%s assente in %s" % (frammento, fisico))
 
 # ---- 9. niente risorse di terze parti ----
 # canonical e alternate sono dichiarazioni di identita', non risorse caricate:

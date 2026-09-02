@@ -94,8 +94,16 @@ def basi_dichiarate():
         if not m:
             continue
         url = m.group(1) + "/"
-        if n != "index.html" and url.endswith("/" + n + "/"):
-            url = url[: -len(n + "/")]
+        # La canonical di una sottopagina non porta l'estensione (Cloudflare
+        # Pages risponde 308 da /bolla.html a /bolla, quindi l'indirizzo che
+        # vale e' il secondo). Si toglie quindi il nome SENZA .html; il ramo
+        # con l'estensione resta per compatibilita' con com'era prima.
+        if n != "index.html":
+            senza = n[: -len(".html")]
+            if url.endswith("/" + n + "/"):
+                url = url[: -len(n + "/")]
+            elif url.endswith("/" + senza + "/"):
+                url = url[: -len(senza + "/")]
         trovate.setdefault(url, []).append(n)
     return trovate
 
