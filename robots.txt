@@ -6,4 +6,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://minarankstudio.com/flysystem.io/sitemap.xml
+Sitemap: https://flysystem.io/sitemap.xml

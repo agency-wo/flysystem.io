@@ -1,0 +1,13 @@
+# Cloudflare Pages serve una pagina anche senza estensione: `bolla.html` risponde
+# sia a /bolla.html sia a /bolla. Qui i link interni scrivono l'estensione per
+# esteso e le canonical la dichiarano, quindi la forma senza estensione sarebbe
+# un secondo indirizzo per lo stesso contenuto - duplicato creato da noi, non
+# ereditato. Questi 301 lo chiudono invece di lasciarlo aperto e sperare che
+# Google consolidi da solo.
+#
+# GitHub Pages ignora questo file, come ignora _headers: diventa effettivo al
+# passaggio su Cloudflare.
+/bolla        /bolla.html        301
+/cataloghi    /cataloghi.html    301
+/contatti     /contatti.html     301
+/privacy      /privacy.html      301
