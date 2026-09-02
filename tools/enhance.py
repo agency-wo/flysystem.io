@@ -32,6 +32,7 @@ from PIL import Image, ImageFilter
 
 GAN = "realesrgan-x4plus"   # generativo
 NET = "realesrnet-x4plus"  # fedele
+NESSUNO = None              # nessun modello: la sorgente ha gia i pixel che servono
 
 ROOT = Path(__file__).parent.parent
 IMG = ROOT / "assets" / "img"
@@ -55,15 +56,19 @@ MODELS = ROOT / "tools" / "bin" / "models"
 # (slug, sorgente, larghezze, modello, correzione dominante opzionale)
 JOBS = [
     # --- Bolla, dal raster nativo del catalogo (344-691 px) ---
-    ("bolla/notte-palme",      "pdf:fly-system-bolla:21", (480, 960, 1376), GAN, None),
+    # V18: il cliente ha mandato l'originale vero, 1052 px contro i 344 del
+    # catalogo. Niente modello: sono pixel fotografati, non ricostruiti.
+    ("bolla/notte-palme",      "file:_sorgenti/bollafly.jpeg", (480, 960, 1052), NESSUNO, None),
     ("bolla/amaca",            "pdf:fly-system-bolla:57", (480, 960, 1376), GAN, None),
     ("bolla/suite",            "pdf:fly-system-bolla:61", (480, 960, 1376), GAN, None),
     ("bolla/dusk-garden",      "pdf:fly-system-bolla:4",  (480, 960, 1440, 2400), GAN, None),
-    ("bolla/glamping-aerial",  "pdf:fly-system-bolla:39", (480, 960, 1440, 2400), GAN, None),
+    # V18: originale vero del cliente, 1451 px contro i 691 del catalogo
+    ("bolla/glamping-aerial",  "file:_sorgenti/bollafly1.jpeg", (480, 960, 1451), NESSUNO, None),
 
     # --- schede modello Bolla ---
     ("bolla/modelli/r400",  "pdf:fly-system-bolla:52", (240, 480, 800, 1030), GAN, None),
-    ("bolla/modelli/r500",  "pdf:fly-system-bolla:21", (240, 480, 800, 1030), GAN, None),
+    # V18: stessa scena della fascia di punta, quindi stesso originale vero
+    ("bolla/modelli/r500",  "file:_sorgenti/bollafly.jpeg", (240, 480, 800, 1030), NESSUNO, None),
     # la 650 e ripresa con LED verdi: la dominante va neutralizzata come in V14,
     # altrimenti l'ingrandimento restituisce una sala verde molto piu nitida
     ("bolla/modelli/r650",  "pdf:fly-system-bolla:26", (240, 480, 800, 1030), GAN, 0.55),
@@ -77,7 +82,7 @@ JOBS = [
     ("bolla/glamping-inverno", "file:_sorgenti/fly1.jpeg", (480, 960, 1440, 2160), GAN, None),
     ("home/selezione",         "file:_sorgenti/fly8.jpeg", (480, 960, 1440, 2880), GAN, None),
     ("outdoor/montaggio",      "file:_sorgenti/perg2.jpeg", (480, 960, 1280, 2592), GAN, None),
-    ("outdoor/tramonto",       "file:_sorgenti/fly2.jpeg", (480, 960, 1600, 2880), GAN, None),
+    ("outdoor/tramonto",       "file:_sorgenti/fly2.jpeg", (480, 960, 1600, 2160), GAN, None),
     # outdoor/rooftop: tolta dal sito su richiesta del titolare.
     # Il sorgente resta in _sorgenti/fly4.jpeg; per rimetterla servono
     # anche il <figure> in index.html e una griglia che la ospiti.
@@ -178,8 +183,15 @@ def main(nome, spec, larghezze, modello, corr=None):
     orig = originale(spec)
     print(f"  originale {orig.width}x{orig.height}  (serviamo {riferimento.width}x{riferimento.height})")
 
-    grande = ingrandisci(orig, modello)
-    print(f"  ingrandita {grande.width}x{grande.height} con {modello}")
+    if modello is None:
+        # Su una fotografia con pixel veri il modello non serve e non aiuta: in
+        # V16 abbiamo misurato che il generativo LEVIGA il dettaglio fine. Si
+        # ingrandisce solo se il gate lo chiede, e in quel caso col fedele.
+        grande = orig
+        print("  nessun ingrandimento: la sorgente ha gia i pixel che servono")
+    else:
+        grande = ingrandisci(orig, modello)
+        print(f"  ingrandita {grande.width}x{grande.height} con {modello}")
 
     if corr:
         grande = neutralizza(grande, corr)
