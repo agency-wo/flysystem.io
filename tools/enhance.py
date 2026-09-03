@@ -76,7 +76,10 @@ JOBS = [
     # V18: la scheda 1000 parla di grandi eventi e adesso ne mostra uno. Ritaglio
     # fermato sopra la fascia dove gli ospiti diventano riconoscibili, e modello
     # FEDELE perche qui ci sono persone: un generativo ricostruirebbe i volti.
-    ("bolla/modelli/r1000", "file:_sorgenti/bobo-evento.jpeg", (240, 480, 800, 1030), NET, None),
+    # 1040 e non 1030: la vecchia 1030 e rimasta nella cache di Cloudflare per
+    # trenta giorni con lo stesso indirizzo e contenuto diverso. Cambiare misura
+    # cambia l'indirizzo, che e l'unico modo di farla arrivare senza una purga.
+    ("bolla/modelli/r1000", "file:_sorgenti/bobo-evento.jpeg", (240, 480, 800, 1040), NET, None),
     ("bolla/modelli/g400",  "pdf:fly-system-bolla:56", (240, 480, 800, 1030), GAN, None),
     ("bolla/modelli/g500",  "pdf:fly-system-bolla:51", (240, 480, 800, 1030), GAN, None),
     ("bolla/modelli/suite", "pdf:fly-system-bolla:61", (240, 480, 800, 1030), GAN, None),

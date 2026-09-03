@@ -20,9 +20,22 @@
 /assets/js/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Immagini e video: lunghi ma NON immutabili. Qui i nomi sono stabili e non
-# contengono un'impronta, quindi sostituire una foto tenendo lo stesso nome deve
-# restare possibile e deve arrivare ai visitatori senza rinominarla.
+# Immagini e video: trenta giorni, non immutabili.
+#
+# ATTENZIONE, qui c'era una frase sbagliata: diceva che sostituire una foto
+# tenendo lo stesso nome "deve arrivare ai visitatori senza rinominarla".
+# Non e cosi, ed e stato verificato dal vivo il 2026-09-03. Sostituita
+# r1000-1030.jpg con un'altra fotografia e ripubblicato, il sito continuava a
+# servire la vecchia: `cf-cache-status: HIT`, `Age: 4276`. L'origine aveva il
+# file giusto, il bordo di Cloudflare no, e senza una purga sarebbe rimasto
+# cosi fino a trenta giorni. Lo stesso vale per il browser di chi e gia
+# passato.
+#
+# Quindi: quando cambia il CONTENUTO di un'immagine, cambiare anche
+# l'indirizzo (una misura diversa basta), oppure purgare la cache di
+# Cloudflare. Le due strade sono equivalenti; la prima non richiede
+# credenziali. Vale lo stesso principio che tools/versiona.py applica a
+# style.css e main.js.
 /assets/img/*
   Cache-Control: public, max-age=2592000
 /assets/video/*

@@ -32,7 +32,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-DIST = ROOT / "_dist"
+
+# La cartella di pubblicazione sta FUORI da OneDrive. Dentro, due problemi:
+# OneDrive tiene i file aperti mentre sincronizza e la ricostruzione fallisce
+# con "Access is denied", e ogni pubblicazione sincronizzerebbe 195 MB inutili.
+DIST = Path(os.environ.get("TEMP", "/tmp")) / "flysystem-dist"
 
 # Tutto e solo cio che deve stare online. Niente jolly su cartelle di lavoro.
 PAGINE = ["index.html", "bolla.html", "cataloghi.html", "contatti.html",
@@ -47,10 +51,39 @@ MAI = ["_sorgenti", "tools", "README.md", "package.json", "package-lock.json",
 LIMITE = 25 * 1024 * 1024  # Cloudflare Pages rifiuta i file oltre i 25 MiB
 
 
+def svuota(d, tentativi=5):
+    """rmtree su Windows fallisce se un antivirus o l'indicizzatore tiene aperta
+    una cartella appena scritta. Non e un errore da propagare: si riprova, si
+    tolgono gli attributi di sola lettura, e si aspetta un attimo."""
+    import stat
+    import time
+
+    def riprova(func, percorso, _exc):
+        try:
+            os.chmod(percorso, stat.S_IWRITE)
+            func(percorso)
+        except OSError:
+            pass
+
+    for i in range(tentativi):
+        if not d.exists():
+            return
+        try:
+            shutil.rmtree(d, onexc=riprova)
+        except (OSError, TypeError):
+            try:
+                shutil.rmtree(d, onerror=lambda f, p, e: riprova(f, p, e))
+            except OSError:
+                pass
+        if not d.exists():
+            return
+        time.sleep(0.6 * (i + 1))
+    raise SystemExit(f"non riesco a svuotare {d}: chiudere i programmi che la stanno leggendo")
+
+
 def costruisci():
-    if DIST.exists():
-        shutil.rmtree(DIST)
-    DIST.mkdir()
+    svuota(DIST)
+    DIST.mkdir(parents=True)
     mancanti = []
     for nome in PAGINE + FILE:
         src = ROOT / nome

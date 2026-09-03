@@ -15,5 +15,3 @@ Thumbs.db
 tools/bin/
 /.wrangler/
 
-# cartella di pubblicazione, ricostruita da tools/pubblica.py
-_dist/
