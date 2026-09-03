@@ -66,6 +66,12 @@ const DENY = `
   (() => {
     let allowed = false;
     addEventListener("pointerdown", () => { allowed = true; }, true);
+    // Con piu video per pagina il gate ne prova uno alla volta. Il primo click
+    // sbloccherebbe l'autoplay per TUTTA la pagina, e il video successivo
+    // partirebbe da solo, correttamente senza pulsante: sembrerebbe un difetto
+    // del sito e invece e questo stub. Il gate rimette il divieto fra un blocco
+    // e l'altro.
+    window.__vietaDiNuovo = () => { allowed = false; };
     const real = HTMLMediaElement.prototype.play;
     HTMLMediaElement.prototype.play = function () {
       if (!allowed) return Promise.reject(new DOMException("denied", "NotAllowedError"));
@@ -108,35 +114,59 @@ for (const { page: file, label } of CASES) {
     if (mode === "autoplay-negato") await p.addInitScript(DENY);
 
     await p.goto(BASE + file, { waitUntil: "load" });
-    // .first(): da V18 bolla.html ha DUE video in ciclo. Il locator stretto
-    // sollevava "strict mode violation" invece di controllarne uno.
-    await p.locator("[data-video] video[data-loop]").first().scrollIntoViewIfNeeded();
-    await p.waitForTimeout(3000);
+    // I blocchi in fondo alla pagina non hanno ancora ricevuto la classe .in
+    // dell'animazione di comparsa, quindi la figura sta a opacita zero e il
+    // pulsante non e cliccabile. Gli altri strumenti (shot.mjs, nitidezza.mjs)
+    // forzano gia .in per lo stesso motivo.
+    await p.evaluate(() => document.querySelectorAll(".rv, .rv-img, .rv-rule").forEach((e) => e.classList.add("in")));
 
-    const s = await p.evaluate(() => {
-      const v = document.querySelector("[data-video] video[data-loop]");
-      const b = document.querySelector("[data-video] [data-play]");
-      return {
-        paused: v.paused, t: +v.currentTime.toFixed(2), ready: v.readyState,
-        err: v.error && v.error.code, btn: b ? !b.hidden : null,
-      };
-    });
+    // Una pagina puo avere PIU video in ciclo: da V18 bolla.html ne ha due.
+    // Si controllano tutti, uno per uno. La prima versione di questa modifica
+    // usava .first() per zittire lo "strict mode violation", e cosi il secondo
+    // video restava senza copertura: il difetto che il gate esiste per trovare
+    // sarebbe passato inosservato proprio sul video appena aggiunto.
+    // L'unita e il BLOCCO [data-video], non il video: pulsante e video devono
+    // venire dallo stesso contenitore, altrimenti si clicca il pulsante di un
+    // altro blocco che non e ancora visibile.
+    const blocchi = p.locator("[data-video]:has(video[data-loop])");
+    const quanti = await blocchi.count();
+    report(quanti > 0, `${label} / ${mode}: almeno un video in ciclo (${quanti})`);
 
-    if (mode === "normale") {
-      report(!s.paused && s.t > 0, `${label} / ${mode}: parte da solo (t=${s.t}s, paused=${s.paused})`);
-      report(s.btn === false, `${label} / ${mode}: nessun pulsante quando parte da solo`);
-    } else {
-      report(s.paused, `${label} / ${mode}: non parte da solo, come deve`);
-      report(s.btn === true, `${label} / ${mode}: il pulsante di avvio e visibile`);
-      await p.locator("[data-video] [data-play]").first().click();
-      await p.waitForTimeout(1500);
-      const after = await p.evaluate(() => {
-        const v = document.querySelector("[data-video] video[data-loop]");
-        return { paused: v.paused, t: +v.currentTime.toFixed(2) };
-      });
-      report(!after.paused && after.t > 0, `${label} / ${mode}: il click lo avvia (t=${after.t}s)`);
+    for (let k = 0; k < quanti; k++) {
+      const nome = quanti > 1 ? `${label} #${k + 1}` : label;
+      const blocco = blocchi.nth(k);
+      // ogni blocco parte dallo stesso stato: autoplay di nuovo vietato
+      await p.evaluate(() => window.__vietaDiNuovo && window.__vietaDiNuovo());
+      await blocco.locator("video[data-loop]").scrollIntoViewIfNeeded();
+      await p.waitForTimeout(3000);
+
+      const s = await p.evaluate((k) => {
+        const blk = document.querySelectorAll("[data-video]")[k];
+        const v = blk.querySelector("video[data-loop]");
+        const b = blk.querySelector("[data-play]");
+        return {
+          paused: v.paused, t: +v.currentTime.toFixed(2), ready: v.readyState,
+          err: v.error && v.error.code, btn: b ? !b.hidden : null,
+          src: (v.currentSrc || "").split("/").pop(),
+        };
+      }, k);
+
+      if (mode === "normale") {
+        report(!s.paused && s.t > 0, `${nome} / ${mode}: parte da solo (${s.src}, t=${s.t}s)`);
+        report(s.btn === false, `${nome} / ${mode}: nessun pulsante quando parte da solo`);
+      } else {
+        report(s.paused, `${nome} / ${mode}: non parte da solo, come deve (${s.src})`);
+        report(s.btn === true, `${nome} / ${mode}: il pulsante di avvio e visibile`);
+        await blocco.locator("[data-play]").click();
+        await p.waitForTimeout(1500);
+        const after = await p.evaluate((k) => {
+          const v = document.querySelectorAll("[data-video]")[k].querySelector("video[data-loop]");
+          return { paused: v.paused, t: +v.currentTime.toFixed(2) };
+        }, k);
+        report(!after.paused && after.t > 0, `${nome} / ${mode}: il click lo avvia (t=${after.t}s)`);
+      }
+      report(!s.err, `${nome} / ${mode}: nessun MediaError`);
     }
-    report(!s.err, `${label} / ${mode}: nessun MediaError`);
     report(errors.length === 0, `${label} / ${mode}: zero errori di pagina${errors.length ? " -> " + errors[0].slice(0, 120) : ""}`);
     await ctx.close();
   }

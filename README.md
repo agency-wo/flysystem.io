@@ -45,17 +45,28 @@ npx serve .
 - **Modulo contatti**: `action` punta a `https://formsubmit.co/info@flysystemrn.it`. Al primo invio FormSubmit manda una mail di conferma da approvare. In alternativa sostituire l'endpoint (Formspree, PHP dell'hosting): è un solo attributo in `contatti.html`.
 - **Video**: il drone su bolla.html parte solo in viewport e mai con `prefers-reduced-motion` (gestito in main.js via `video[data-loop]`); il promo pergole è `preload="none"` + poster, scarica solo al tap.
 - **Cataloghi porte in arrivo**: il cliente invierà nuove edizioni; sostituire il file in `assets/pdf/` mantenendo lo stesso nome, aggiornare pagine/MB sulla card e rigenerare la copertina con `tools/make_covers.py`.
-- **Deploy**: Cloudflare Pages, progetto `flysystem`. **Non e collegato a git** (`Git Provider: No`
-  in `wrangler pages project list`): fare push su GitHub **non pubblica niente**. Si pubblica a mano:
+- **Deploy**: Cloudflare Pages, progetto `flysystem`. **Non e collegato a git**
+  (`Git Provider: No` in `wrangler pages project list`): fare push su GitHub **non pubblica
+  niente**. Si pubblica cosi, e solo cosi:
 
   ```bash
-  npx wrangler pages deploy . --project-name flysystem --branch main
+  python tools/pubblica.py            # costruisce _dist/ e dice cosa contiene
+  python tools/pubblica.py --deploy   # costruisce e pubblica
   ```
 
-  `.assetsignore` tiene fuori `tools/`, `_sorgenti/` e i file di progetto. Prima esisteva solo la
-  raccomandazione scritta qui, e niente la faceva rispettare: quel comando carica tutta la cartella,
-  quindi senza quel file finirebbero online i materiali originali del cliente e un binario da 43 MB.
-  Dopo ogni pubblicazione, verificare che `_sorgenti/bollafly.jpeg` e `tools/enhance.py` rispondano 404.
+  **Non usare `wrangler pages deploy .` dalla radice.** Quel comando carica tutta la cartella,
+  e su Pages `.assetsignore` **non viene letto** (e una funzione dei Workers static assets:
+  verificato nel codice di wrangler, dove la lista di esclusione di Pages e fissa e non
+  comprende quel file). Dalla radice finirebbero online `_sorgenti/`, cioe le fotografie
+  originali del cliente e i PDF che portano nel nome le societa del gruppo, piu `tools/` e
+  `README.md`. Oggi sembra andar bene solo perche il limite di 25 MiB per file fa abortire il
+  deploy: su un clone pulito quei file non esistono, il limite non scatta e la pubblicazione
+  riesce, in silenzio.
+
+  `tools/pubblica.py` lavora con una lista di cose **ammesse**, non di cose escluse: se
+  dimentichi una riga manca una pagina e te ne accorgi subito, invece di pubblicare per errore.
+  Dopo ogni pubblicazione verificare che `_sorgenti/bobo.jpeg`, `tools/enhance.py` e
+  `README.md` rispondano 404.
 - **Header/footer**: duplicati nelle 5 pagine, marcati `<!-- shared: ... keep in sync -->`. Modificarli ovunque insieme.
 - **Cache e impronte**: `style.css` e `main.js` sono citati con `?v=<8 cifre>`, l'impronta del contenuto. Serve perche la CSS viaggia con `Cache-Control: max-age=14400` (4 ore) e senza impronta una modifica resta invisibile ai visitatori per tutto quel tempo. **Dopo ogni modifica a CSS o JS: `python tools/versiona.py`.** Con `--check` esce con 1 se un'impronta e vecchia, e `--hook` installa un pre-commit che fa quel controllo da solo. I font non si versionano di proposito: li cita anche `@font-face`, e versionarne uno solo dei due li farebbe scaricare due volte.
 

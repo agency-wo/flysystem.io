@@ -23,6 +23,16 @@ from PIL import Image
 
 TOLLERANZA = 0.012  # 1,2% sul rapporto: copre l'arrotondamento delle misure
 
+# Scarto massimo fra due misure della stessa fotografia, confrontate a 32x32 in
+# scala di grigi. Serve perche il controllo sul rapporto NON basta: in V18 la
+# variante r1000-1030 era una fotografia completamente diversa dalle altre tre
+# e il rapporto differiva dello 0,03%, quindi passava indisturbata. Veniva
+# servita a quasi tutti i telefoni moderni e a ogni portatile Retina, cioe la
+# sostituzione della foto non arrivava alla maggioranza dei visitatori.
+# Valori misurati: misure della stessa foto stanno fra 0,3 e 1,5; la variante
+# sbagliata stava a 109.
+SCARTO_MAX = 6.0
+
 
 def larghezza_altezza(p):
     try:
@@ -30,6 +40,20 @@ def larghezza_altezza(p):
         return im.width, im.height
     except Exception:
         return None
+
+
+def impronta(p):
+    """Miniatura 32x32 in grigio: due misure della stessa foto si somigliano."""
+    try:
+        return list(Image.open(p).convert("L").resize((32, 32), Image.LANCZOS).getdata())
+    except Exception:
+        return None
+
+
+def scarto(a, b):
+    if not a or not b:
+        return 0.0
+    return (sum((x - y) ** 2 for x, y in zip(a, b)) / len(a)) ** 0.5
 
 
 def varianti_valide(stem, ext):
@@ -53,6 +77,32 @@ def varianti_valide(stem, ext):
         (buone if abs(r - rif) / rif <= TOLLERANZA else scartate).append((w, r, p))
     for w, r, p in scartate:
         print(f"    ESCLUSA {os.path.basename(p)}: rapporto {r:.3f} contro {rif:.3f}, e un'altra foto")
+
+    # Il rapporto non basta: due fotografie diverse possono avere lo stesso
+    # rapporto. Si confronta anche il contenuto.
+    #
+    # Il riferimento e la MAGGIORANZA, non la misura piu grande. Nel caso vero
+    # che ha motivato questo controllo la variante rimasta indietro era proprio
+    # la piu grande (r1000-1030): prendendo quella come riferimento il controllo
+    # avrebbe scartato le tre buone e tenuto la sbagliata, cioe esattamente il
+    # contrario. Si sceglie l'impronta con piu compagne vicine.
+    if len(buone) >= 3:
+        imps = [(w, r, pth, impronta(pth)) for w, r, pth in buone]
+        migliore, voti_migliore = None, -1
+        for _, _, _, cand in imps:
+            voti = sum(1 for _, _, _, altra in imps if scarto(cand, altra) <= SCARTO_MAX)
+            if voti > voti_migliore:
+                migliore, voti_migliore = cand, voti
+        contenuto = []
+        for w, r, pth, imp in imps:
+            d = scarto(imp, migliore)
+            if d > SCARTO_MAX:
+                print(f"    ESCLUSA {os.path.basename(pth)}: stesso rapporto ma contenuto diverso "
+                      f"(scarto {d:.0f} contro il massimo {SCARTO_MAX:.0f}), mentre le altre "
+                      f"{voti_migliore} concordano: e rimasta indietro da una versione precedente")
+            else:
+                contenuto.append((w, r, pth))
+        return contenuto
     return buone
 
 

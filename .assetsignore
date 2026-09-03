@@ -1,14 +1,24 @@
-# Cosa NON deve finire sul sito pubblico.
+# ATTENZIONE: SU CLOUDFLARE PAGES QUESTO FILE NON FA NULLA.
 #
-# Il progetto Pages non e collegato a git (Git Provider: No): si pubblica a mano
-# con `wrangler pages deploy`, e quel comando carica tutta la cartella. Senza
-# questo file finirebbero online i materiali originali del cliente e un binario
-# da 43 MB. Il README lo chiedeva a parole dal primo giorno, ma niente lo
-# faceva rispettare.
+# `.assetsignore` e una funzione dei Workers static assets. Il percorso di
+# upload di Pages non lo legge mai: filtra contro una lista fissa dentro
+# wrangler (_worker.js, _redirects, _headers, _routes.json, functions,
+# .DS_Store, node_modules, .git, .wrangler) e nient'altro.
+#
+# Verificato leggendo wrangler 4.128.0: la IGNORE_LIST e scritta nel codice e
+# "assetsignore" compare solo nel percorso Workers.
+#
+# La protezione vera e `python tools/pubblica.py`, che costruisce _dist/ con una
+# LISTA DI COSE AMMESSE e si rifiuta di pubblicare se ci trova dentro qualcosa
+# che non deve uscire. Non pubblicare mai con `wrangler pages deploy .` dalla
+# radice: caricherebbe _sorgenti/ e tools/.
+#
+# Il file resta perche il giorno in cui si passasse a Workers static assets
+# diventerebbe attivo, e allora queste righe servirebbero davvero.
 tools/
 _sorgenti/
+_dist/
 .wrangler/
-.git/
 README.md
 package.json
 package-lock.json

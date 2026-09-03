@@ -14,3 +14,6 @@ Thumbs.db
 # ingranditore Real-ESRGAN: 43 MB di binario e modelli, si riscarica (vedi README)
 tools/bin/
 /.wrangler/
+
+# cartella di pubblicazione, ricostruita da tools/pubblica.py
+_dist/

@@ -73,7 +73,10 @@ JOBS = [
     # altrimenti l'ingrandimento restituisce una sala verde molto piu nitida
     ("bolla/modelli/r650",  "pdf:fly-system-bolla:26", (240, 480, 800, 1030), GAN, 0.55),
     ("bolla/modelli/r800",  "pdf:fly-system-bolla:22", (240, 480, 800, 1030), GAN, None),
-    ("bolla/modelli/r1000", "pdf:fly-system-bolla:32", (240, 480, 800, 1030), GAN, None),
+    # V18: la scheda 1000 parla di grandi eventi e adesso ne mostra uno. Ritaglio
+    # fermato sopra la fascia dove gli ospiti diventano riconoscibili, e modello
+    # FEDELE perche qui ci sono persone: un generativo ricostruirebbe i volti.
+    ("bolla/modelli/r1000", "file:_sorgenti/bobo-evento.jpeg", (240, 480, 800, 1030), NET, None),
     ("bolla/modelli/g400",  "pdf:fly-system-bolla:56", (240, 480, 800, 1030), GAN, None),
     ("bolla/modelli/g500",  "pdf:fly-system-bolla:51", (240, 480, 800, 1030), GAN, None),
     ("bolla/modelli/suite", "pdf:fly-system-bolla:61", (240, 480, 800, 1030), GAN, None),
