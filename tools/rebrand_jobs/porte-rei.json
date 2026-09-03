@@ -1,0 +1,77 @@
+{
+  "_nota": "Marchio del fornitore sul catalogo REI: script rosso (226,29,35) con la A verde (0,151,70). Misurato con tools/misura_marchio.py per_logo, che tiene solo i blocchi della taglia giusta contenenti entrambi i colori: cosi la fiamma fotografata di pagina 2, che ha lo stesso rosso ma non il verde, non viene scambiata per il marchio.",
+  "patches": [
+    {
+      "page": 1,
+      "rect": [
+        279.5,
+        720.2,
+        552.5,
+        765.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.9
+    },
+    {
+      "page": 2,
+      "rect": [
+        314.5,
+        218.5,
+        587.5,
+        264.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.9
+    },
+    {
+      "page": 3,
+      "rect": [
+        166.5,
+        760.5,
+        439.5,
+        806.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.9
+    },
+    {
+      "page": 4,
+      "rect": [
+        216.0,
+        765.2,
+        489.0,
+        810.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.9
+    },
+    {
+      "page": 5,
+      "rect": [
+        216.0,
+        765.2,
+        489.0,
+        810.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.9
+    },
+    {
+      "page": 6,
+      "rect": [
+        54.0,
+        103.2,
+        327.2,
+        148.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.9
+    }
+  ]
+}

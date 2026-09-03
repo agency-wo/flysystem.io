@@ -1,0 +1,78 @@
+{
+  "_nota": "Catalogo controtelai tecnico del cliente. Porta il logo Fly System VECCHIO: uccello blu con ingranaggio giallo, fotografato da uninsegna, con sotto la fascia blu PORTE PER INTERNI. Va sostituito con il logo attuale del sito (tools/out/logo-navy.png, identico a assets/img/logo-600.png). Le sei posizioni sono state misurate individuando prima uccello e ingranaggio per colore, poi allargando la finestra a destra e in basso per prendere anche la scritta e la fascia.",
+  "patches": [
+    {
+      "page": 1,
+      "rect": [
+        113.6,
+        103.0,
+        423.3,
+        257.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.95,
+      "_nota": "Il bordo inferiore si ferma a 257: sotto comincia la fascia blu con l'elenco dei servizi, che e' di Fly System e resta. Con il valore misurato del lockup (277,7) la prima riga della fascia veniva tagliata a meta' e restava 'OMU' di FILOMURO."
+    },
+    {
+      "page": 2,
+      "rect": [
+        382.4,
+        15.6,
+        518.4,
+        93.3
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.95
+    },
+    {
+      "page": 3,
+      "rect": [
+        377.3,
+        14.3,
+        522.7,
+        96.7
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.95
+    },
+    {
+      "page": 15,
+      "rect": [
+        184.0,
+        687.0,
+        430.0,
+        824.3
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.95
+    },
+    {
+      "page": 16,
+      "rect": [
+        414.0,
+        13.0,
+        593.0,
+        114.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.95
+    },
+    {
+      "page": 21,
+      "rect": [
+        393.0,
+        729.6,
+        582.0,
+        836.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.95
+    }
+  ]
+}

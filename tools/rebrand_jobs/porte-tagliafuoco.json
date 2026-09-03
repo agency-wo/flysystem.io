@@ -1,0 +1,352 @@
+{
+  "_nota": "Marchio del produttore di porte tagliafuoco. Copertina: il logo viene tolto e resta quello Fly System gia presente. Pagine 2-29: lo slogan e il logo del produttore in basso a destra, misurati uno per uno con tools/misura_marchio.py perche lo stesso slogan e stampato in due misure e la barra verde sopra scende a quote diverse.",
+  "patches": [
+    {
+      "page": 1,
+      "rect": [
+        44.0,
+        596.0,
+        172.0,
+        730.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 2,
+      "rect": [
+        338.5,
+        724.0,
+        551.5,
+        777.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 3,
+      "rect": [
+        333.0,
+        718.8,
+        549.8,
+        777.2
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 4,
+      "rect": [
+        338.2,
+        738.5,
+        551.0,
+        789.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 5,
+      "rect": [
+        329.2,
+        735.5,
+        549.2,
+        790.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 6,
+      "rect": [
+        338.8,
+        743.8,
+        550.2,
+        793.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 7,
+      "rect": [
+        331.2,
+        743.5,
+        543.8,
+        793.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 8,
+      "rect": [
+        336.2,
+        734.2,
+        547.0,
+        783.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 9,
+      "rect": [
+        330.8,
+        737.5,
+        547.0,
+        790.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 10,
+      "rect": [
+        336.5,
+        730.8,
+        553.5,
+        783.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 11,
+      "rect": [
+        331.0,
+        742.8,
+        543.8,
+        792.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 12,
+      "rect": [
+        338.0,
+        729.8,
+        547.2,
+        780.2
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 13,
+      "rect": [
+        330.2,
+        743.0,
+        542.8,
+        793.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 14,
+      "rect": [
+        338.0,
+        729.8,
+        547.5,
+        779.2
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 15,
+      "rect": [
+        329.2,
+        740.2,
+        543.5,
+        792.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 16,
+      "rect": [
+        340.8,
+        724.2,
+        558.5,
+        778.0
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 17,
+      "rect": [
+        329.5,
+        730.8,
+        546.8,
+        781.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 18,
+      "rect": [
+        336.8,
+        731.2,
+        547.5,
+        780.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 19,
+      "rect": [
+        327.8,
+        729.2,
+        550.8,
+        786.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 20,
+      "rect": [
+        336.5,
+        724.2,
+        547.2,
+        775.2
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 21,
+      "rect": [
+        330.2,
+        727.8,
+        549.8,
+        783.2
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 22,
+      "rect": [
+        331.5,
+        726.0,
+        551.8,
+        775.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 23,
+      "rect": [
+        323.0,
+        722.5,
+        554.2,
+        785.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 24,
+      "rect": [
+        331.5,
+        716.5,
+        555.8,
+        775.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 25,
+      "rect": [
+        313.5,
+        716.5,
+        556.2,
+        775.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 26,
+      "rect": [
+        332.0,
+        730.2,
+        554.0,
+        775.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 27,
+      "rect": [
+        331.5,
+        718.8,
+        549.8,
+        776.5
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 28,
+      "rect": [
+        313.5,
+        716.5,
+        556.2,
+        775.2
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    },
+    {
+      "page": 29,
+      "rect": [
+        313.5,
+        716.5,
+        556.2,
+        775.8
+      ],
+      "bg": null,
+      "logo": "navy",
+      "logo_max_frac": 0.92
+    }
+  ]
+}

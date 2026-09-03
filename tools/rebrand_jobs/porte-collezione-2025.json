@@ -1,0 +1,17 @@
+{
+  "_nota": "Marchio del fornitore, versione bianca con la A verde, solo in copertina. Le pagine 24-29 che una ricerca sul solo verde segnalava sono le fasce di testata LINEA, non il marchio: verificate sul provino di tutte e 42 le pagine.",
+  "patches": [
+    {
+      "page": 1,
+      "rect": [
+        170.0,
+        652.0,
+        428.0,
+        752.0
+      ],
+      "bg": null,
+      "logo": "white",
+      "logo_max_frac": 0.85
+    }
+  ]
+}

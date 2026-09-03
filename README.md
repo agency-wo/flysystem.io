@@ -7,7 +7,7 @@ Sito vetrina di Fly System Srls: **produzione italiana** di porte, serramenti, p
 ```
 index.html            Home (hero, Bolla, indice prodotti, Porte, Outdoor/Pergole con video, chi siamo, professionisti, teaser cataloghi)
 bolla.html            Bolla: collezione Bolle Luxury 2026 (Ristorazione + Glamping, dati reali, gallery, video drone)
-cataloghi.html        Libreria: 14 cataloghi PDF in 6 capitoli con Sfoglia/Scarica
+cataloghi.html        Libreria: 16 cataloghi PDF in 6 capitoli con Sfoglia/Scarica
 contatti.html         Recapiti, modulo di contatto, FAQ
 404.html              Pagina non trovata
 assets/
@@ -15,7 +15,7 @@ assets/
   js/main.js          Solo progressive enhancement (menu, reveal, video loop in viewport, form): il sito funziona senza JS
   fonts/              Switzer (woff2, self-hosted, licenza Fontshare)
   img/                Immagini AVIF/WebP/JPEG responsive estratte dai cataloghi + foto reali + logo
-  pdf/                14 cataloghi ufficiali (fly-system-*.pdf)
+  pdf/                16 cataloghi ufficiali (fly-system-*.pdf)
   video/              bolla-drone.mp4 (loop muto, gated da JS) + pergole-promo.mp4 (tap-to-play)
 tools/                Script di sviluppo (non pubblicare): estrazione PDF, rebranding PDF, encoder immagini/video, screenshot QA
 _sorgenti/            Materiali sorgente del cliente (in .gitignore, mai pubblicati)
@@ -44,7 +44,8 @@ npx serve .
 
 - **Modulo contatti**: `action` punta a `https://formsubmit.co/info@flysystemrn.it`. Al primo invio FormSubmit manda una mail di conferma da approvare. In alternativa sostituire l'endpoint (Formspree, PHP dell'hosting): è un solo attributo in `contatti.html`.
 - **Video**: il drone su bolla.html parte solo in viewport e mai con `prefers-reduced-motion` (gestito in main.js via `video[data-loop]`); il promo pergole è `preload="none"` + poster, scarica solo al tap.
-- **Cataloghi porte in arrivo**: il cliente invierà nuove edizioni; sostituire il file in `assets/pdf/` mantenendo lo stesso nome, aggiornare pagine/MB sulla card e rigenerare la copertina con `tools/make_covers.py`.
+- **Passata white label del 2026-09-03**: i marchi dei fornitori sono stati tolti da porte-tagliafuoco (29 pagine), porte-rei (6), collezione-2025 (copertina) e dal nuovo porte-ei (10 pagine), e il logo Fly System vecchio e' stato sostituito su controtelai-tecnico. Le regole stanno in `tools/rebrand_jobs/`, i rettangoli sono stati misurati con `tools/misura_marchio.py` perche' questi PDF non hanno livello di testo e `rebrand_pdf.py audit` su di loro risponde sempre zero. **Restano due cose fuori, per scelta**: il nome stampato sul ventaglio colori fotografato di porte-ei p29, che in diagonale su un oggetto in ombra non si copre senza fare peggio del problema; e `fly-system-pedana-termica.pdf`, che non e' un catalogo Fly System con sopra un logo altrui ma il prodotto di un'altra azienda, nominato nei titoli e in ogni paragrafo, quindi non si rimarchia coprendo: o si tiene, o si toglie dalla libreria, o si chiede al fornitore una versione neutra.
+- **Cataloghi porte in arrivo**: il cliente inviera' nuove edizioni; sostituire il file in `assets/pdf/` mantenendo lo stesso nome, aggiornare pagine/MB sulla card e rigenerare la copertina con `tools/make_covers.py` (che pero' fa solo 480 e 960: la 1440 che ogni srcset cita non ha generatore).
 - **Deploy**: Cloudflare Pages, progetto `flysystem`. **Non e collegato a git**
   (`Git Provider: No` in `wrangler pages project list`): fare push su GitHub **non pubblica
   niente**. Si pubblica cosi, e solo cosi:

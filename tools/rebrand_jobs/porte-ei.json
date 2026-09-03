@@ -1,0 +1,116 @@
+{
+  "_nota": "Catalogo di un fornitore. Il logotipo verticale sta sempre nello stesso punto del margine sinistro (x 40-58, y 458-493): confrontando quel ritaglio su tutte e 29 le pagine, dieci lo portano. In piu il nome e stampato due volte sul ventaglio colori fotografato dellultima pagina. NESSUN logo sostitutivo nel margine: lo spazio e 28x50 punti e il marchio Fly System ridotto li dentro non si legge, quindi si lascia il margine pulito. Sul ventaglio due rettangoli stretti col fondo campionato dal bordo, non un blocco unico: il primo tentativo copriva mezzo cartellino e appiattiva la fotografia. Nessuna regola di testo: il PDF non ha livello di testo.",
+  "patches": [
+    {
+      "page": 15,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 16,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 21,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 22,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 23,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 24,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 25,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 26,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 27,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    },
+    {
+      "page": 29,
+      "rect": [
+        35.0,
+        451.0,
+        63.0,
+        501.0
+      ],
+      "bg": null,
+      "logo": null
+    }
+  ],
+  "_ventaglio": "Il nome stampato sul ventaglio colori fotografato (p29) NON viene coperto. E' scritto in diagonale su un oggetto in prospettiva e in ombra: un rettangolo ad assi paralleli che lo contiene copre un quarto del cartellino e si vede piu' del nome. Tre tentativi, tutti peggiori del problema. Va deciso a monte: togliere la fotografia, tenerla com'e', o accettare la toppa."
+}

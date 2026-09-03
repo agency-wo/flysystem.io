@@ -27,9 +27,16 @@ from pathlib import Path
 
 import fitz
 
+# I nomi dei produttori da cercare. Le ultime tre righe sono i fornitori porte,
+# aggiunte il 2026-09-03 durante la passata white label: su quei cataloghi
+# l'audit non serve a niente (non hanno livello di testo) ma se un domani ne
+# arriva uno col testo, questa lista lo vede.
 NEEDLES = ["rikreo", "materika", "materica", "terraviva", "terra viva",
            "laterraviva", "castellarano", "maurizio", ".xyz", "sassuolo",
-           "gardenliving", "outdoor living"]
+           "gardenliving", "outdoor living",
+           "vertaglia", "nones", "creatori di sicurezza",
+           "la porta che arreda", "pedanatermica", "pedana termica",
+           "cozyfloor", "pedanatermica.it"]
 KEEP = ["uniclic", "clicky"]
 TOOLS = Path(__file__).parent
 LOGOS = {"navy": TOOLS / "out" / "logo-navy.png",
