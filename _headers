@@ -1,7 +1,6 @@
 # Intestazioni per la destinazione Cloudflare. GitHub Pages ignora questo file,
 # quindi tenerlo qui non cambia nulla finche' il sito sta li': serve gia' pronto
-# per il giorno del passaggio. Modellato su Essi/_headers, con una differenza
-# importante spiegata sotto.
+# per il giorno del passaggio.
 
 # I font non cambiano mai e il loro nome descrive il taglio: un peso diverso e'
 # un file diverso. Immutable significa che il browser non torna nemmeno a
@@ -10,7 +9,7 @@
   Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *
 
-# CSS e JS QUI possono essere immutabili, al contrario di Essi: tools/versiona.py
+# CSS e JS qui possono essere immutabili: tools/versiona.py
 # appende l'impronta sha1 del contenuto all'indirizzo (style.css?v=1e52e5f2), e
 # una stringa di query e' una chiave di cache distinta. Contenuto nuovo,
 # indirizzo nuovo, quindi una cache lunga non puo' servire una copia vecchia.

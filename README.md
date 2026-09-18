@@ -151,7 +151,7 @@ Il progetto pero' e' di **MarketingPro**, non di minarank. Le due tappe previste
 - Un `robots.txt` viene letto **solo dalla radice di un dominio**. Quello che sta in questo repo oggi
   e' inerte proprio per questo: su un sottodominio torna a funzionare.
 - Tiene le pagine di un cliente fuori dall'albero degli indirizzi e dalla sitemap del sito d'agenzia.
-- Il worker di Essi usa `"html_handling": "auto-trailing-slash"`, che fa rispondere `/bolla` come
+- Il worker del sito d'agenzia usa `"html_handling": "auto-trailing-slash"`, che fa rispondere `/bolla` come
   `bolla.html`. Qui i link scrivono `bolla.html` per esteso, quindi dentro quel worker
   risponderebbero **sia `/bolla` sia `/bolla.html`**: contenuto duplicato creato da noi.
 
