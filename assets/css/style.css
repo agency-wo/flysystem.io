@@ -899,11 +899,17 @@
   /* Il credito sta dentro una frase, non in un elenco: senza sottolineatura resta
      distinguibile solo per colore (WCAG 1.4.1). Stessa sottolineatura dei link
      editoriali nel contenuto, per coerenza. */
-  .site-foot__legal span a {
+  .site-foot__legal span a:not(:has(img)),
+  .site-foot__credit-name {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 3px;
   }
+  /* Dal 2026-11-01 il credito e' la frase dell'agenzia con il suo logo nello stesso link:
+     si sottolinea il nome scritto, non il logo. */
+  .site-foot__credit { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+  .site-foot__credit a { display: inline-flex; align-items: center; gap: 8px; }
+  .site-foot__credit img { display: block; width: 100px; height: auto; aspect-ratio: 100 / 23; object-fit: contain; }
 
   /* ---- indice editoriale (righe prodotto) ---- */
 
