@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 """Sposta il sito da un indirizzo di base a un altro, in un colpo solo.
 
-Il sito nasce servito da `minarankstudio.com/flysystem.io/`, che e' il dominio
-di minarank soltanto perche' il repository sta nell'organizzazione GitHub
-`agency-wo`, il cui sito Pages porta `CNAME = minarankstudio.com`: ogni repo di
-quella organizzazione finisce sotto quel dominio in automatico. Il progetto pero'
-e' di MarketingPro, e prima o poi va servito da li'; piu' avanti ancora dal
-dominio del cliente.
+Il sito e' servito da `https://flysystem.io/`. Se un giorno il dominio cambia,
+l'indirizzo di base va cambiato ovunque nello stesso momento.
 
 L'indirizzo di base compare in canonical, og:url, og:image, in ogni URL assoluto
-dei dati strutturati, nella sitemap e dentro robots.txt: oggi 70 volte su 6 file,
+dei dati strutturati, nella sitemap e dentro robots.txt, in ogni file,
 tutte identiche. Farlo a mano significa quasi certamente dimenticarne una, e una
 canonical rimasta indietro e' peggio di nessuna canonical, perche' indica a
 Google una pagina diversa da quella che sta leggendo.

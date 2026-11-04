@@ -1,21 +1,14 @@
 # -*- coding: utf-8 -*-
 """Controllo unico del sito: SEO, dati strutturati, immagini, coerenza.
 
-Portato da `kun/_tools/verify.py`, che fa lo stesso mestiere per un altro sito
-statico a lingua singola. Quello non e' una libreria: host, numero WhatsApp e
-endpoint del modulo sono scritti dentro, quindi si riusa copiando e adattando,
-non importando. Qui restano i controlli che valgono per flysystem e cadono
-quelli che non c'entrano (Web3Forms, WhatsApp, foto stock di quel cliente).
-
-Due differenze deliberate rispetto all'originale:
+Due scelte deliberate:
 
 1. **L'host non e' scritto qui dentro.** Viene letto dalla canonical di
-   `index.html`, come fa `rebase.py`. Cosi' il giorno in cui il sito passa a
-   MarketingPro o al dominio del cliente questo file non va toccato, e anzi e'
-   proprio lui ad accorgersi se lo spostamento e' rimasto a meta'.
-2. **I percorsi sono relativi, e devono restarlo.** L'originale pretende
-   percorsi assoluti dalla radice; qui sarebbe un errore, perche' il sito e'
-   servito da una sottocartella e `/assets/...` uscirebbe dal sito.
+   `index.html`, come fa `rebase.py`. Cosi' se il dominio cambia questo file
+   non va toccato, e anzi e' proprio lui ad accorgersi se lo spostamento e'
+   rimasto a meta'.
+2. **I percorsi sono relativi, e devono restarlo**, cosi' le pagine funzionano
+   uguali da qualunque cartella o anteprima.
 
     python tools/verify.py
 
@@ -224,8 +217,7 @@ for n in TUTTE:
                 guasto(n, "check 8: ancora %s senza bersaglio" % h)
             continue
         if h.startswith("/"):
-            guasto(n, "check 8: percorso assoluto %s: il sito sta in una "
-                      "sottocartella, deve restare relativo" % h)
+            guasto(n, "check 8: percorso assoluto %s: deve restare relativo" % h)
             continue
         percorso, _, frammento = h.partition("#")
         # La stringa di query non fa parte del nome del file: `style.css?v=1e52e5f2`

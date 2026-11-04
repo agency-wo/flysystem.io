@@ -38,7 +38,7 @@ npx serve .
 > Serve un server che supporti le richieste HTTP Range. **`python -m http.server` non le supporta**
 > (risponde 200 con tutto il file e senza `Accept-Ranges`) e con quello **i video non partono su
 > Safari**, pur funzionando su Chrome. Se un video sembra rotto, prima di indagare sul file
-> verificare con che server lo si sta guardando. In produzione GitHub Pages risponde 206 correttamente.
+> verificare con che server lo si sta guardando. In produzione Cloudflare Pages risponde 206 correttamente.
 
 ## Da sapere
 
@@ -130,59 +130,37 @@ disallinei. **Nessun `Offer`**: sul sito non compare un prezzo, quindi non se ne
 Fuori anche `geo`, `openingHours` e `vatID`, che sono fra i dati ancora in attesa qui sotto.
 
 `sitemap.xml` elenca le 4 pagine indicizzabili (`404.html` resta fuori, ha gia' `noindex`).
-`robots.txt` c'e' ma **oggi non fa nulla**: un robots.txt viene letto solo dalla radice di un
-dominio, e il sito risponde da una sottocartella. Diventa effettivo al passaggio al dominio proprio.
+`robots.txt` sta alla radice del dominio e indica la sitemap.
 
-## Dove vive il sito, e dove deve andare
+## Dove vive il sito
 
-Oggi risponde da `https://minarankstudio.com/flysystem.io/`. **Non e' una scelta fatta qui dentro**:
-il repository sta nell'organizzazione GitHub `agency-wo`, il cui sito Pages porta
-`CNAME = minarankstudio.com`, quindi ogni repo di quella organizzazione finisce sotto quel dominio in
-automatico. L'API di GitHub infatti riporta come `html_url` proprio quell'indirizzo. Nessuna modifica
-a queste pagine puo' cambiarlo: o si sposta il repository, o si serve il sito da un'altra parte.
+Il sito risponde da `https://flysystem.io/`, servito dal progetto Cloudflare Pages `flysystem`
+(sopra, "Deploy"). Canonical, `og:url`, ogni URL assoluto nei dati strutturati, la sitemap e la riga
+`Sitemap:` di robots.txt puntano tutti li'. GitHub Pages e' spento su questo repository: il
+repository non pubblica nulla da solo.
 
-Il progetto pero' e' di **MarketingPro**, non di minarank. Le due tappe previste:
+**Resta sul dominio del cliente.** Spostarlo su un sottodominio o in una sottocartella del sito
+dell'agenzia trasformerebbe il credito nel footer in un link interno, e porterebbe le pagine del
+cliente dentro l'albero degli indirizzi e la sitemap dell'agenzia.
 
-1. `flysystem.marketingpro-agency.com` (Cloudflare di MarketingPro)
-2. il dominio del cliente, quando sara' pronto
-
-### Perche' un sottodominio e non una sottocartella
-
-- Un `robots.txt` viene letto **solo dalla radice di un dominio**. Quello che sta in questo repo oggi
-  e' inerte proprio per questo: su un sottodominio torna a funzionare.
-- Tiene le pagine di un cliente fuori dall'albero degli indirizzi e dalla sitemap del sito d'agenzia.
-- Il worker del sito d'agenzia usa `"html_handling": "auto-trailing-slash"`, che fa rispondere `/bolla` come
-  `bolla.html`. Qui i link scrivono `bolla.html` per esteso, quindi dentro quel worker
-  risponderebbero **sia `/bolla` sia `/bolla.html`**: contenuto duplicato creato da noi.
-
-### Come si sposta
+### Se un giorno il dominio cambia
 
 Canonical, `og:url`, ogni URL assoluto nei dati strutturati, la sitemap e la riga `Sitemap:` di
-robots.txt usano la stessa identica stringa, oggi 70 volte su 6 file. `tools/rebase.py` la cambia
+robots.txt usano la stessa identica stringa, in ogni file. `tools/rebase.py` la cambia
 tutta insieme e si rifiuta di lasciare il lavoro a meta':
 
 ```bash
-python tools/rebase.py https://flysystem.marketingpro-agency.com/
+python tools/rebase.py https://nuovo-dominio.it/
 python tools/verify.py          # sitemap, canonical e JSON-LD devono ancora concordare
 ```
 
-L'indirizzo di partenza non e' scritto nello script: lo legge dalla canonical di `index.html`, quindi
-funziona anche alla seconda tappa senza modifiche. `python tools/rebase.py --check` dice se le pagine
-hanno smesso di concordare.
+L'indirizzo di partenza non e' scritto nello script: lo legge dalla canonical di `index.html`.
+`python tools/rebase.py --check` dice se le pagine hanno smesso di concordare. Il cambio va fatto
+solo quando il nuovo dominio serve davvero questo sito: una canonical che punta a un indirizzo che
+risponde con altro dice a Google di preferire quell'altro.
 
-Lato Cloudflare, una volta sull'account giusto:
-
-```bash
-npx wrangler pages project create flysystem --production-branch main
-npx wrangler pages deploy . --project-name flysystem --branch main
-# poi in dashboard: Custom domains -> flysystem.marketingpro-agency.com
-```
-
-Escludere `tools/` e `_sorgenti/` da qualsiasi pubblicazione.
-
-**Da fare quando il dominio serve davvero questo sito, non prima.** Una canonical che punta a un
-indirizzo che risponde con altro dice a Google di preferire quell'altro: oggi `flysystem.io` ospita
-ancora il vecchio sito Hostinger, e `flysystem.marketingpro-agency.com` non esiste.
+`tools/` e `_sorgenti/` non si pubblicano mai: `tools/pubblica.py` copia solo un elenco chiuso di
+file e si ferma se uno dei due finisse nella cartella di pubblicazione.
 
 ## Controlli
 
@@ -194,13 +172,12 @@ python tools/linkcheck.py
 node tools/shot.mjs index.html out.png 390 844   # riporta gli sforamenti orizzontali
 ```
 
-`verify.py` e' portato da `kun/_tools/verify.py`, che fa lo stesso mestiere per un altro sito statico
-monolingua. Controlla un solo `h1`, lunghezza e unicita' di title e description, canonical, Open Graph,
+`verify.py` controlla un solo `h1`, lunghezza e unicita' di title e description, canonical, Open Graph,
 JSON-LD (parsing, `LocalBusiness`, `BreadcrumbList`, `Product`, **nessun `@id` citato e mai definito**),
 `alt`/`width`/`height` sulle immagini, link e risorse esistenti, nessuna risorsa di terze parti, NAP
 identico ovunque, sitemap uguale alle pagine, navigazione identica fra le pagine, impronte di cache
-allineate. **I percorsi devono restare relativi**: il sito e' servito da una sottocartella e un
-`/assets/...` uscirebbe dal sito.
+allineate. **I percorsi devono restare relativi** (lo controlla `verify.py`): cosi' le pagine
+funzionano uguali da qualunque cartella o anteprima.
 
 ## Dati in attesa di conferma (placeholder nel sito)
 
