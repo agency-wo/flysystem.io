@@ -2369,15 +2369,47 @@
   }
 
   /* Il palco tiene video e pulsante sovrapposti. Lo sfondo e carta, non quasi-nero:
-     se il primo fotogramma tarda, si vede la pagina e non un lampo scuro. */
+     se il primo fotogramma tarda, si vede la pagina e non un lampo scuro.
+
+     LA BATTUTA. Prima il video era un rettangolo nudo appoggiato alla sezione
+     scura, e siccome la ripresa e notturna i suoi bordi si scioglievano nel
+     fondo: non si capiva dove finisse il filmato e cominciasse la pagina. Il
+     palco adesso fa da cornice, con una battuta tutt'intorno, un filo chiaro
+     sul bordo esterno e un'ombra che stacca il blocco dal fondo. Si legge come
+     uno schermo montato, che e poi quello che e.
+
+     SPIGOLI VIVI, e non e una dimenticanza. Su questo sito non esiste un raggio
+     oltre il filo di 1px: tutto il resto e a spigolo. Una cornice stondata da
+     telefono qui sarebbe un corpo estraneo, per quanto vada di moda. */
   .video-frame__stage {
     position: relative;
     overflow: clip;
+    --battuta: 12px;
+    padding: var(--battuta);
     background: var(--paper-2);
+    border: 1px solid var(--rule);
+    box-shadow: 0 18px 44px color-mix(in srgb, var(--ink) 22%, transparent);
+  }
+
+  /* Il filo attorno allo schermo, dentro la battuta: separa il filmato dalla
+     cornice anche quando il fotogramma e quasi nero. */
+  .video-frame__stage::before {
+    content: "";
+    position: absolute;
+    inset: var(--battuta, 10px);
+    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    pointer-events: none;
+    z-index: 2;
   }
 
   .dark .video-frame__stage {
-    background: color-mix(in srgb, var(--paper) 8%, transparent);
+    background: color-mix(in srgb, var(--paper) 9%, transparent);
+    border-color: color-mix(in srgb, var(--paper) 22%, transparent);
+    box-shadow: 0 26px 64px rgba(0, 0, 0, .5);
+  }
+
+  .dark .video-frame__stage::before {
+    border-color: color-mix(in srgb, var(--paper) 14%, transparent);
   }
 
   .video-frame video {
@@ -2431,8 +2463,11 @@
      E anche il modo per non dipendere dai controlli nativi al primo paint. */
   .video-frame__play {
     position: absolute;
-    inset: 0;
-    inline-size: 100%;
+    /* alla battuta e non a zero: il velo del pulsante deve coprire lo schermo,
+       non anche la cornice, altrimenti al passaggio del mouse si scurisce tutto
+       il blocco e la cornice sparisce proprio mentre la si guarda */
+    inset: var(--battuta, 10px);
+    inline-size: auto;
     display: grid;
     place-items: center;
     border: 0;
