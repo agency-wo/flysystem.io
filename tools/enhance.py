@@ -113,10 +113,19 @@ JOBS = [
     ("bolla/mare-tramonto",   BOLLA26 + ":31:0.135,0.140,0.865,0.935", (480, 960, 1376), NET, None),
     ("bolla/collina-sera",    BOLLA26 + ":40:0.158,0.170,0.842,0.935", (480, 960, 1373), NET, None),
 
-    # cupola-luci, camera-sera e neve-tavola NON hanno una voce qui: tengono la
-    # fotografia della passata precedente e hanno solo cambiato nome, perche il
-    # contenuto era gia cambiato e l'indirizzo no. Rigenerarle le cambierebbe
-    # una seconda volta senza motivo.
+    # La fascia di apertura, cioe la PRIMA fotografia della pagina Bolla.
+    # Sostituisce cupola-luci su richiesta del cliente, che di quella scena non
+    # era convinto ("Ket e zevendeson dot"), mentre il resto gli andava bene.
+    # p78 e dal capitolo Contesti: due cupole accese all'ora blu su un dehors,
+    # che e esattamente cio che dice la didascalia. Nessun cartellino "Credit:"
+    # e nessuna faccia riconoscibile, che e il motivo per cui p67 e p70, pure
+    # belle, sono rimaste fuori.
+    ("bolla/dehors-sera", BOLLA26 + ":78:0.005,0.280,0.995,0.797", (480, 960, 1440, 2160), NET, None),
+
+    # camera-sera e neve-tavola NON hanno una voce qui: tengono la fotografia
+    # della passata precedente e hanno solo cambiato nome, perche il contenuto
+    # era gia cambiato e l'indirizzo no. Rigenerarle le cambierebbe una seconda
+    # volta senza motivo.
 
     # --- schede modello della gamma 2026: fotografie, non disegni ---
     #
