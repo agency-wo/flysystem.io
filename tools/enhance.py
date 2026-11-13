@@ -101,7 +101,14 @@ JOBS = [
     #     il profilo social, che sono scritti DENTRO la fotografia. Pubblicarne
     #     uno metterebbe sul sito del nostro cliente il nome e l'indirizzo di
     #     un'attivita terza, come se fosse una referenza raccolta da noi.
-    ("bolla/piscina-palme",   BOLLA26 + ":57:0.130,0.150,0.870,0.935", (480, 960, 996), NET, None),
+    # ATTENZIONE AL CAPITOLO, non solo all'inquadratura. Il catalogo ha un
+    # capitolo ESTATE (p54-59) e p6 lo spiega: "Stessa struttura, copertura
+    # diversa". Stesso telaio, rivestimento in telo al posto della cupola
+    # trasparente. Il 2026-11-13 la foto della home era p57, cioe' dentro quel
+    # capitolo: in home c'era il telo e non il prodotto di cui parla la pagina.
+    # Se ne e' accorto il cliente, non noi. Le pagine buone per la cupola
+    # trasparente sono Ho.Re.Ca p26-33, Glamping p34-45, Contesti p64-83.
+    ("bolla/cena-giardino",   BOLLA26 + ":30:0.163,0.225,0.837,0.940", (480, 960, 996), NET, None),
     ("bolla/terrazza-lago",   BOLLA26 + ":76:0.010,0.330,0.990,0.842", (480, 960, 1451), NET, None),
     ("bolla/mare-tramonto",   BOLLA26 + ":31:0.135,0.140,0.865,0.935", (480, 960, 1376), NET, None),
     ("bolla/collina-sera",    BOLLA26 + ":40:0.158,0.170,0.842,0.935", (480, 960, 1373), NET, None),
