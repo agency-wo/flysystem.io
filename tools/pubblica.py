@@ -139,10 +139,20 @@ def main():
     print("\n  nessun file vietato, nessun file oltre i 25 MiB")
 
     if "--deploy" in sys.argv:
+        # Le credenziali arrivano da _private/cloudflare.json, non dal login di
+        # wrangler: quello e' uno solo per tutta la macchina e si sposta fra
+        # aziende, quindi un altro progetto lo cambia e questo deploy fallisce
+        # con "Authentication error [code: 10000]" senza che il token sia
+        # scaduto. Succede il 2026-11-13. Vedi tools/credenziali.py.
+        import credenziali
+        env = credenziali.ambiente()
+        if env is None:
+            sys.exit(1)
+
         print("\n  pubblico...")
         subprocess.run(["npx", "wrangler", "pages", "deploy", str(DIST),
                         "--project-name", "flysystem", "--branch", "main"],
-                       check=True, shell=True)
+                       check=True, shell=True, env=env)
         print("\n  Verificare adesso che questi rispondano 404 sul sito:")
         for p in ("_sorgenti/bobo.jpeg", "tools/enhance.py", "README.md"):
             print(f"    https://flysystem.io/{p}")

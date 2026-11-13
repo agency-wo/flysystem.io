@@ -55,6 +55,15 @@ npx serve .
   python tools/pubblica.py --deploy   # costruisce e pubblica
   ```
 
+  **Le credenziali non sono il login di wrangler.** Quel login e' uno solo per tutta la
+  macchina e si sposta fra aziende: il 2026-11-13 un altro progetto lo aveva spostato su un
+  altro account e il deploy falliva con `Authentication error [code: 10000]` pur avendo un
+  token valido, perche' quel token non vedeva questo progetto. Adesso servono un token API
+  con permesso Pages:Edit e l'id dell'account, in `_private/cloudflare.json`, che e' ignorato
+  da git e che `pubblica.py` non copia mai. Se manca, `--deploy` si rifiuta **prima** di
+  caricare qualcosa e stampa come crearlo. Il modulo e' `tools/credenziali.py`, e non stampa
+  mai il valore del token.
+
   **Non usare `wrangler pages deploy .` dalla radice.** Quel comando carica tutta la cartella,
   e su Pages `.assetsignore` **non viene letto** (e una funzione dei Workers static assets:
   verificato nel codice di wrangler, dove la lista di esclusione di Pages e fissa e non

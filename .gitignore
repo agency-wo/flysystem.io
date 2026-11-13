@@ -1,6 +1,10 @@
 # materiali sorgente del cliente (mai pubblicati)
 /_sorgenti/
 
+# credenziali Cloudflare di questo sito: account fissato e token API.
+# Mai in git, mai pubblicate: pubblica.py copia solo assets/ e le pagine dichiarate.
+/_private/
+
 # dipendenze e artefatti degli script di sviluppo
 tools/node_modules/
 tools/package-lock.json
