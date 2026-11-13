@@ -1,0 +1,11 @@
+{
+  "_nota": "NESSUNA PATCH, E NON VA AGGIUNTA NESSUNA. Questo file esiste solo per fermare la prossima persona che esegue l'audit su assets/pdf/fly-system-bolla.pdf.",
+
+  "_falso_positivo": "python tools/rebrand_pdf.py audit assets/pdf/fly-system-bolla.pdf risponde TOTAL HITS: 4, su 'outdoor living', a pagina 4 (una volta) e a pagina 100 (tre volte), in grigio chiaro 10,7pt. NON E' il nome della societa' del gruppo che la regola white label vieta: e' la normale locuzione inglese, nella traduzione del testo di marketing. Le quattro frasi, lette per intero: 'More space. More comfort. A new way to experience outdoor living.' / 'CAPSULA brings a new dimension to outdoor living, transforming gardens, terraces and outdoor areas...' / '...becoming an outdoor living area, a space for entertaining, dining, relaxing...' / '...designed to experience outdoor living with a new level of comfort and style.' Cancellarle toglierebbe copy vera da un catalogo del cliente.",
+
+  "_perche_succede": "'outdoor living' sta in NEEDLES di rebrand_pdf.py perche' e' anche il nome di una delle societa' del gruppo. La lista e' un confronto di stringhe e non puo' distinguere il nome proprio dalla locuzione comune: la distinzione la fa chi legge la frase, e qui e' stata fatta il 2026-11-13.",
+
+  "_da_sapere_su_questo_pdf": "124 pagine, bilingue italiano e inglese, logo Fly System attuale su copertina e retro, contatti info@flysystemrn.it e www.flysystem.io. Nessun marchio di fornitore. Arrivato a 26,94 MiB, sopra il limite di 25 MiB di Cloudflare Pages: portato a 18,03 MiB dal primo gradino di tools/opt-pdf.py, con pagine e testo invariati e nessuna differenza visibile su una pagina fotografica e una tecnica.",
+
+  "patches": []
+}
