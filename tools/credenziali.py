@@ -65,7 +65,10 @@ def leggi():
         print(ISTRUZIONI % FILE)
         return None
     try:
-        d = json.loads(FILE.read_text(encoding="utf-8"))
+        # utf-8-sig e non utf-8: Set-Content -Encoding utf8 di PowerShell 5
+        # scrive il BOM, e json.loads lo rifiuta con "Unexpected UTF-8 BOM".
+        # utf-8-sig legge bene anche un file senza BOM, quindi copre i due casi.
+        d = json.loads(FILE.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError as e:
         print("  %s non e' JSON valido: %s" % (FILE, e))
         return None
