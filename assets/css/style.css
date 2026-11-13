@@ -2562,7 +2562,13 @@
   /* le cifre si leggono in colonna, non in una stringa unica */
   .modello__dati {
     display: flex;
-    gap: 26px;
+    /* wrap: la riga era costruita su TRE voci corte. Le schede della gamma
+       2026 ne hanno quattro (diametro, altezza, superficie, capienza) e senza
+       wrap sforavano il contenitore a 320 e a 960 px, dove la griglia stringe
+       la scheda intorno ai 300. Mandarle a capo costa una riga e tiene il
+       dato, invece di toglierne uno per far entrare gli altri. */
+    flex-wrap: wrap;
+    gap: 14px 26px;
     margin-top: 20px;
     padding-top: 16px;
     border-top: 1px solid var(--rule);
