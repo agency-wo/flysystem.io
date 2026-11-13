@@ -16,7 +16,19 @@ from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).parent.parent
 OUT = ROOT / "assets" / "img" / "bolla" / "modelli"
-PDF = ROOT / "assets" / "pdf" / "fly-system-bolla.pdf"
+
+# L'ORIGINALE in _sorgenti, non il file pubblicato.
+#
+# Qui c'era assets/pdf/fly-system-bolla.pdf, cioe' il nome con cui il catalogo
+# viene pubblicato. Il 2026-11 quel nome ha cambiato contenuto: il cliente ha
+# mandato l'edizione nuova, da 16 pagine a 124, e si e' tenuto lo stesso
+# indirizzo per non rompere i link gia' condivisi. Le pagine qui sotto (5, 6,
+# 7, 11...) sono pero' quelle del catalogo VECCHIO: puntate al file pubblicato
+# avrebbero ritagliato pagine a caso di un altro documento e riscritto in
+# silenzio tutte e otto le schede modello, senza un errore.
+# Il file in _sorgenti non viene mai ripubblicato, quindi non cambia contenuto.
+PDF = ROOT / "_sorgenti" / "flysystem catalogo bolla ristorazione e glamping.pdf"
+PAGINE_ATTESE = 16
 
 # slug, pagina, box frazionario del blocco fotografico, ancoraggio verticale
 # del ritaglio 3:4 (0 = alto, 0.5 = centro, 1 = basso)
@@ -77,7 +89,17 @@ WIDTHS_EXTRA = {}
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
+    if not PDF.exists():
+        raise SystemExit(f"manca {PDF}: e' l'originale del cliente, non il catalogo pubblicato")
     doc = fitz.open(PDF)
+    # Il numero di pagine e' la prova che questo e' il documento per cui i
+    # ritagli qui sotto sono stati misurati. Se un giorno cambia, i ritagli non
+    # valgono piu' e vanno rimisurati: meglio fermarsi che riscrivere otto
+    # schede con pagine sbagliate.
+    if doc.page_count != PAGINE_ATTESE:
+        raise SystemExit(
+            f"{PDF.name} ha {doc.page_count} pagine invece di {PAGINE_ATTESE}: "
+            "i ritagli di questo script sono misurati su quello da 16 e qui non valgono")
     for slug, page, box, anchor, corr in JOBS:
         pg = doc[page - 1]
         z = 2600 / max(pg.rect.width, pg.rect.height)

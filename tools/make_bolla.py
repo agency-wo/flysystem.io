@@ -90,9 +90,20 @@ def encode(im: Image.Image, slug: str, widths):
     print(f"  {slug}: master {im.width}x{im.height}, widths {[w for w in widths if w <= im.width]}")
 
 
+PAGINE_ATTESE = 16
+
+
 def main(pdf: Path, sorgenti: Path):
     OUT.mkdir(parents=True, exist_ok=True)
     doc = fitz.open(pdf)
+    # Questo script e' misurato sul catalogo Bolla da 16 pagine. Passargli
+    # quello da 124, che oggi porta lo STESSO nome in assets/pdf, farebbe
+    # ritagliare pagine di un altro documento. Si controlla e ci si ferma.
+    if doc.page_count != PAGINE_ATTESE:
+        raise SystemExit(
+            f"{pdf.name} ha {doc.page_count} pagine invece di {PAGINE_ATTESE}: i ritagli "
+            "di questo script sono misurati sul catalogo da 16 e qui non valgono.\n"
+            "  L'originale giusto e' _sorgenti/flysystem catalogo bolla ristorazione e glamping.pdf")
     for slug, pno, (x0, y0, x1, y1), widths in JOBS:
         page = doc[pno - 1]
         scale = 2400 / max(page.rect.width, page.rect.height)
