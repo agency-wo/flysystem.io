@@ -59,7 +59,14 @@ def scarto(a, b):
 def varianti_valide(stem, ext):
     """Tutte le misure di <stem> in <ext> che sono la STESSA fotografia."""
     trovate = []
-    for p in glob.glob(f"{stem}-*.{ext}"):
+    # -[0-9]* e non -*: c'e uno slug che e PREFISSO di un altro, e con il jolly
+    # aperto il glob di c-controtelai si portava dentro anche le tre misure di
+    # c-controtelai-tecnico. La maggioranza (le tre vere) vinceva il voto sul
+    # contenuto e le altre tre venivano dichiarate "rimaste indietro da una
+    # versione precedente", quindi mai citate, quindi ORFANE: --pulisci avrebbe
+    # cancellato nove file che cataloghi.html usa davvero. Dopo il trattino
+    # deve esserci una cifra, cosi il nome lungo non entra nel glob del corto.
+    for p in glob.glob(f"{stem}-[0-9]*.{ext}"):
         m = re.search(r"-(\d+)\." + ext + r"$", p)
         if not m:
             continue

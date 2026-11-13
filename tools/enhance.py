@@ -16,8 +16,23 @@ Catena:
 uso:
   python tools/enhance.py <cartella/nome> pdf:<catalogo>:<xref> [larghezze] [modello]
   python tools/enhance.py <cartella/nome> file:<_sorgenti/fly8.jpeg> [larghezze] [modello]
+  python tools/enhance.py <cartella/nome> pagina:<catalogo>:<n>:<l,t,r,b> [larghezze] [modello]
 
   modello: realesrgan-x4plus (generativo, default) | realesrnet-x4plus (fedele)
+
+Le tre sorgenti, e quando si usa quale:
+
+  pdf:     il raster nativo per xref. Va bene finche una fotografia sta in UNA
+           sola immagine dentro il PDF.
+  pagina:  rende la pagina al suo dpi nativo e ne ritaglia un riquadro
+           frazionario. Serve quando la fotografia e spezzata in strisce
+           affiancate, come nel catalogo bolla e capsula (2.215 raster), dove
+           extract_image restituisce frammenti e mai l'immagine intera.
+  file:    un originale fotografico mandato dal cliente.
+
+Solo `pagina:` puo generare uno slug NUOVO, perche porta gia il riquadro con
+se. Le altre due si riagganciano all'inquadratura di cio che il sito serve
+adesso, quindi pretendono che quello slug esista gia.
 """
 import io
 import shutil
@@ -33,6 +48,23 @@ from PIL import Image, ImageFilter
 GAN = "realesrgan-x4plus"   # generativo
 NET = "realesrnet-x4plus"  # fedele
 NESSUNO = None              # nessun modello: la sorgente ha gia i pixel che servono
+
+# I due cataloghi Bolla, per NOME DEL FILE ORIGINALE e non per il nome con cui
+# vengono pubblicati.
+#
+# Perche conta. Queste voci dicevano "pdf:fly-system-bolla:<xref>", cioe il
+# nome del file in assets/pdf. Il 2026-11 quel nome ha cambiato contenuto: da
+# 16 pagine a 124, perche il cliente ha mandato l'edizione nuova e si e tenuto
+# lo stesso indirizzo per non rompere i link. Gli xref pero non sono stati
+# scritti per quel file. Verificato: l'xref 4 e il 57 non risolvono piu, e il
+# 52 risolve a un'ALTRA immagine, una striscia 1055x166. Cioe un
+# `enhance.py --tutto bolla` avrebbe riscritto in silenzio le schede modello
+# con dei frammenti di pagina, senza un errore.
+#
+# Puntando all'originale in _sorgenti il problema non si ripresenta: quel file
+# non viene mai ripubblicato, quindi il suo nome non cambia contenuto.
+BOLLA16 = "pdf:flysystem catalogo bolla ristorazione e glamping"
+BOLLA26 = "pagina:Fly_System_Bolla_Capsula_Catalogue_261112_135714"
 
 ROOT = Path(__file__).parent.parent
 IMG = ROOT / "assets" / "img"
@@ -55,24 +87,38 @@ MODELS = ROOT / "tools" / "bin" / "models"
 #
 # (slug, sorgente, larghezze, modello, correzione dominante opzionale)
 JOBS = [
-    # --- Bolla, dal raster nativo del catalogo (344-691 px) ---
-    # V18: il cliente ha mandato l'originale vero, 1052 px contro i 344 del
-    # catalogo. Niente modello: sono pixel fotografati, non ricostruiti.
-    ("bolla/notte-palme",      "file:_sorgenti/bollafly.jpeg", (480, 960, 1052), NESSUNO, None),
-    ("bolla/amaca",            "pdf:fly-system-bolla:57", (480, 960, 1376), GAN, None),
-    ("bolla/suite",            "pdf:fly-system-bolla:61", (480, 960, 1376), GAN, None),
-    ("bolla/dusk-garden",      "pdf:fly-system-bolla:4",  (480, 960, 1440, 2400), GAN, None),
-    # V18: originale vero del cliente, 1451 px contro i 691 del catalogo
-    ("bolla/glamping-aerial",  "file:_sorgenti/bollafly1.jpeg", (480, 960, 1451), NESSUNO, None),
+    # --- Bolla, fotografie nuove dal catalogo bolla e capsula (124 pagine) ---
+    # Si rende la PAGINA, non il raster: quel catalogo e composto da 2.215
+    # immagini affiancate, quindi extract_image restituisce strisce. Vedi
+    # originale().
+    #
+    # Modello FEDELE e non generativo: sono installazioni reali di clienti, e
+    # un generativo inventerebbe dettaglio che nella fotografia non c'e.
+    #
+    # I riquadri tengono fuori DUE cose che non devono finire sul sito:
+    #   - il numero di pagina stampato in basso (sta sopra lo 0,94 dell'altezza);
+    #   - i cartellini "Credit:" col nome del locale, l'indirizzo per esteso e
+    #     il profilo social, che sono scritti DENTRO la fotografia. Pubblicarne
+    #     uno metterebbe sul sito del nostro cliente il nome e l'indirizzo di
+    #     un'attivita terza, come se fosse una referenza raccolta da noi.
+    ("bolla/piscina-palme",   BOLLA26 + ":57:0.130,0.150,0.870,0.935", (480, 960, 996), NET, None),
+    ("bolla/terrazza-lago",   BOLLA26 + ":76:0.010,0.330,0.990,0.842", (480, 960, 1451), NET, None),
+    ("bolla/mare-tramonto",   BOLLA26 + ":31:0.135,0.140,0.865,0.935", (480, 960, 1376), NET, None),
+    ("bolla/collina-sera",    BOLLA26 + ":40:0.158,0.170,0.842,0.935", (480, 960, 1373), NET, None),
+
+    # cupola-luci, camera-sera e neve-tavola NON hanno una voce qui: tengono la
+    # fotografia della passata precedente e hanno solo cambiato nome, perche il
+    # contenuto era gia cambiato e l'indirizzo no. Rigenerarle le cambierebbe
+    # una seconda volta senza motivo.
 
     # --- schede modello Bolla ---
-    ("bolla/modelli/r400",  "pdf:fly-system-bolla:52", (240, 480, 800, 1030), GAN, None),
+    ("bolla/modelli/r400",  BOLLA16 + ":52", (240, 480, 800, 1030), GAN, None),
     # V18: stessa scena della fascia di punta, quindi stesso originale vero
     ("bolla/modelli/r500",  "file:_sorgenti/bollafly.jpeg", (240, 480, 800, 1030), NESSUNO, None),
     # la 650 e ripresa con LED verdi: la dominante va neutralizzata come in V14,
     # altrimenti l'ingrandimento restituisce una sala verde molto piu nitida
-    ("bolla/modelli/r650",  "pdf:fly-system-bolla:26", (240, 480, 800, 1030), GAN, 0.55),
-    ("bolla/modelli/r800",  "pdf:fly-system-bolla:22", (240, 480, 800, 1030), GAN, None),
+    ("bolla/modelli/r650",  BOLLA16 + ":26", (240, 480, 800, 1030), GAN, 0.55),
+    ("bolla/modelli/r800",  BOLLA16 + ":22", (240, 480, 800, 1030), GAN, None),
     # V18: la scheda 1000 parla di grandi eventi e adesso ne mostra uno. Ritaglio
     # fermato sopra la fascia dove gli ospiti diventano riconoscibili, e modello
     # FEDELE perche qui ci sono persone: un generativo ricostruirebbe i volti.
@@ -80,12 +126,15 @@ JOBS = [
     # trenta giorni con lo stesso indirizzo e contenuto diverso. Cambiare misura
     # cambia l'indirizzo, che e l'unico modo di farla arrivare senza una purga.
     ("bolla/modelli/r1000", "file:_sorgenti/bobo-evento.jpeg", (240, 480, 800, 1040), NET, None),
-    ("bolla/modelli/g400",  "pdf:fly-system-bolla:56", (240, 480, 800, 1030), GAN, None),
-    ("bolla/modelli/g500",  "pdf:fly-system-bolla:51", (240, 480, 800, 1030), GAN, None),
-    ("bolla/modelli/suite", "pdf:fly-system-bolla:61", (240, 480, 800, 1030), GAN, None),
+    ("bolla/modelli/g400",  BOLLA16 + ":56", (240, 480, 800, 1030), GAN, None),
+    ("bolla/modelli/g500",  BOLLA16 + ":51", (240, 480, 800, 1030), GAN, None),
+    ("bolla/modelli/suite", BOLLA16 + ":61", (240, 480, 800, 1030), GAN, None),
 
     # --- fotografie del cliente: il .jpeg E gia l'originale ---
-    ("bolla/glamping-inverno", "file:_sorgenti/fly1.jpeg", (480, 960, 1440, 2160), GAN, None),
+    # bolla/glamping-inverno stava qui, con sorgente _sorgenti/fly1.jpeg. Tolta:
+    # quella fascia non mostra piu quella fotografia (sostituita nella passata
+    # precedente, adesso si chiama neve-tavola), quindi la voce avrebbe
+    # rimesso la fotografia VECCHIA al posto di quella che il sito serve.
     ("home/selezione",         "file:_sorgenti/fly8.jpeg", (480, 960, 1440, 2880), GAN, None),
     ("outdoor/montaggio",      "file:_sorgenti/perg2.jpeg", (480, 960, 1280, 2592), GAN, None),
     ("outdoor/tramonto",       "file:_sorgenti/fly2.jpeg", (480, 960, 1600, 2160), GAN, None),
@@ -137,14 +186,66 @@ def ritaglio_che_combacia(orig, riferimento):
     return mig, best
 
 
+def catalogo_pdf(nome):
+    """Il catalogo per nome, preferendo l'originale del cliente al pubblicato.
+
+    Conta quale dei due si apre: quello in assets/pdf e gia passato da
+    opt-pdf, cioe da una ricompressione delle immagini, e renderlo di nuovo
+    impilerebbe due perdite sulla stessa fotografia. In _sorgenti c'e il file
+    come lo ha mandato il cliente.
+    """
+    for p in (ROOT / "_sorgenti" / f"{nome}.pdf", ROOT / "assets" / "pdf" / f"{nome}.pdf"):
+        if p.exists():
+            return p
+    raise SystemExit(f"catalogo {nome}.pdf non trovato ne in _sorgenti ne in assets/pdf")
+
+
+def dpi_nativo(p, minimo=72.0, massimo=300.0):
+    """I dpi a cui le immagini di questa pagina sono POSATE davvero.
+
+    Si prende il MASSIMO fra i raster della pagina, non la media: rendere piu
+    piano del piu fitto butterebbe via dettaglio che nel file c'e.
+    """
+    misure = []
+    for im in p.get_images(full=True):
+        xref, larghezza = im[0], im[2]
+        for r in p.get_image_rects(xref):
+            if r.width >= 20 and r.height >= 20:
+                misure.append(larghezza / (r.width / 72.0))
+    if not misure:
+        return massimo
+    return max(minimo, min(massimo, max(misure)))
+
+
 def originale(spec):
     """Restituisce il raster nativo, senza margini di carta ne testo di pagina."""
     tipo, resto = spec.split(":", 1)
     if tipo == "pdf":
         catalogo, xref = resto.rsplit(":", 1)
-        doc = fitz.open(ROOT / "assets" / "pdf" / f"{catalogo}.pdf")
+        doc = fitz.open(catalogo_pdf(catalogo))
         info = doc.extract_image(int(xref))
         return Image.open(io.BytesIO(info["image"])).convert("RGB")
+    if tipo == "pagina":
+        # Perche non si usa "pdf:" qui. Il catalogo bolla e capsula e composto
+        # da 2.215 raster affiancati: una fotografia a tutta pagina e spezzata
+        # in strisce, quindi extract_image restituisce frammenti e mai
+        # l'immagine intera. L'unico modo di riaverla e rendere la PAGINA e
+        # ritagliare il soggetto.
+        catalogo, n, riquadro = resto.split(":", 2)
+        doc = fitz.open(catalogo_pdf(catalogo))
+        p = doc[int(n) - 1]
+        # Si rende al dpi NATIVO della pagina, non a 300. Le fotografie sono
+        # posate fra i 111 e i 155 dpi: renderle a 300 non aggiunge un pixel,
+        # interpola, e il modello finirebbe a ricostruire sopra
+        # l'interpolazione invece che sui pixel veri. Al nativo il modello
+        # riceve esattamente cio che c'e nel file, e l'ingrandimento lo fa lui.
+        d = dpi_nativo(p)
+        pix = p.get_pixmap(matrix=fitz.Matrix(d / 72, d / 72))
+        im = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+        print(f"  pagina {n} resa a {d:.0f} dpi nativi: {im.width}x{im.height}")
+        l, t, r, b = [float(x) for x in riquadro.split(",")]
+        return im.crop((round(l * im.width), round(t * im.height),
+                        round(r * im.width), round(b * im.height)))
     return Image.open(ROOT / resto).convert("RGB")
 
 
@@ -180,14 +281,22 @@ def neutralizza(im, forza):
 
 def main(nome, spec, larghezze, modello, corr=None):
     out = IMG / Path(nome).parent
+    out.mkdir(parents=True, exist_ok=True)
     slug = Path(nome).name
     attuali = sorted(out.glob(f"{slug}-*.jpg"), key=lambda p: Image.open(p).width)
-    if not attuali:
+    # "pagina:" porta gia il riquadro dentro la sorgente, quindi l'inquadratura
+    # e decisa e non va cercata. E l'unico caso in cui uno slug NUOVO si puo
+    # generare: per tutti gli altri serve una misura gia sul sito da cui
+    # ricavare il taglio.
+    esplicito = spec.startswith("pagina:")
+    if not attuali and not esplicito:
         raise SystemExit(f"nessuna immagine attuale per {nome}: non so quale ritaglio tenere")
-    riferimento = Image.open(attuali[-1]).convert("RGB")
+    riferimento = Image.open(attuali[-1]).convert("RGB") if attuali else None
 
     orig = originale(spec)
-    print(f"  originale {orig.width}x{orig.height}  (serviamo {riferimento.width}x{riferimento.height})")
+    serviamo = (f"(serviamo {riferimento.width}x{riferimento.height})" if riferimento
+                else "(slug nuovo)")
+    print(f"  originale {orig.width}x{orig.height}  {serviamo}")
 
     if modello is None:
         # Su una fotografia con pixel veri il modello non serve e non aiuta: in
@@ -201,8 +310,12 @@ def main(nome, spec, larghezze, modello, corr=None):
 
     if corr:
         grande = neutralizza(grande, corr)
-    crop, d = ritaglio_che_combacia(grande, riferimento)
-    print(f"  ritaglio {crop.width}x{crop.height}, distanza dal riferimento {d}/576")
+    if esplicito:
+        crop = grande
+        print(f"  ritaglio {crop.width}x{crop.height}, dal riquadro della sorgente")
+    else:
+        crop, d = ritaglio_che_combacia(grande, riferimento)
+        print(f"  ritaglio {crop.width}x{crop.height}, distanza dal riferimento {d}/576")
 
     for w in sorted({min(w, crop.width) for w in larghezze}):
         h = round(crop.height * w / crop.width)
