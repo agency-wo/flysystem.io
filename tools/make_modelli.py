@@ -1,4 +1,12 @@
-"""Le tavole tecniche delle quattro misure Bolla, per le schede modello.
+"""Le tavole tecniche delle quattro misure Bolla.
+
+NON SONO QUELLO CHE LE SCHEDE MONTANO OGGI. Le schede portano fotografie di
+installazioni reali, ingrandite col modello fedele (le voci "pagina:" di
+enhance.py). Queste tavole sono state fatte, guardate e messe da parte su
+decisione del cliente, che le vuole fotografiche. Restano qui perche' il
+disegno quotato e' l'unica immagine che dimostra la misura di cui parla la
+scheda, e se un giorno servira' una sezione tecnica si rigenera da qui.
+Scrivono con prefisso "tec-" proprio per non sovrascrivere le fotografie.
 
 PERCHE' UN TOOL NUOVO E NON make_bolla_models.py. Quello ritaglia FOTOGRAFIE
 dalle pagine del catalogo da 16, per la gamma vecchia (r400...g500, suite).
@@ -48,10 +56,10 @@ INK = (0x14, 0x17, 0x1D)
 
 # slug, pagina, prospetto quotato, vista 3D   (frazioni di pagina)
 JOBS = [
-    ("300up", 18, (0.028, 0.685, 0.382, 0.935), (0.384, 0.592, 0.892, 0.958)),
-    ("400up", 19, (0.070, 0.645, 0.468, 0.935), (0.478, 0.567, 0.978, 0.934)),
-    ("500up", 20, (0.024, 0.662, 0.436, 0.935), (0.438, 0.607, 0.906, 0.945)),
-    ("600up", 21, (0.066, 0.666, 0.512, 0.935), (0.514, 0.595, 0.985, 0.936)),
+    ("tec-300up", 18, (0.028, 0.685, 0.382, 0.935), (0.384, 0.592, 0.892, 0.958)),
+    ("tec-400up", 19, (0.070, 0.645, 0.468, 0.935), (0.478, 0.567, 0.978, 0.934)),
+    ("tec-500up", 20, (0.024, 0.662, 0.436, 0.935), (0.438, 0.607, 0.906, 0.945)),
+    ("tec-600up", 21, (0.066, 0.666, 0.512, 0.935), (0.514, 0.595, 0.985, 0.936)),
 ]
 
 DPI = 400

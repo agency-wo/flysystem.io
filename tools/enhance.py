@@ -118,6 +118,34 @@ JOBS = [
     # contenuto era gia cambiato e l'indirizzo no. Rigenerarle le cambierebbe
     # una seconda volta senza motivo.
 
+    # --- schede modello della gamma 2026: fotografie, non disegni ---
+    #
+    # QUALE MISURA C'E' IN QUALE FOTO. Il catalogo lo dice UNA volta sola, a
+    # p13: "Nella sua configurazione 600UP, la struttura ospita fino a 30
+    # persone circa". Le altre 41 pagine fotografiche dei capitoli Ho.Re.Ca e
+    # Contesti non nominano nessuna misura. Quindi la 600 UP e dichiarata dal
+    # catalogo, le altre tre sono ABBINATE DA NOI, su decisione del cliente.
+    # Sta scritto qui perche fra sei mesi non sembri un dato di catalogo.
+    #
+    # L'abbinamento non e a caso: si guarda quanti tavoli e quanta gente si
+    # vedono dentro la cupola e lo si tiene coerente con la capienza stampata
+    # sulla scheda. Una sala da trenta coperti sotto la "300 UP" si vedrebbe.
+    #
+    # I riquadri tengono fuori il numero di pagina e il cartellino "Credit:"
+    # col nome e l'indirizzo del locale: su p43 sta in alto, sulle altre tre in
+    # basso, e i tagli sono diversi per questo.
+    # p42 e non p43: stessa scena (camera con letto, due persone) ma posata a
+    # 125 dpi invece che a 74, i piu' poveri del catalogo. Trecento pixel in
+    # piu' nell'originale valgono piu' di qualunque ingrandimento, e p42 non
+    # porta nemmeno il cartellino "Credit:".
+    ("bolla/modelli/300up", BOLLA26 + ":42:0.108,0.180,0.892,0.920", (240, 480, 800, 1030), NET, None),
+    ("bolla/modelli/400up", BOLLA26 + ":15:0.150,0.220,0.850,0.880", (240, 480, 800, 1030), NET, None),
+    ("bolla/modelli/500up", BOLLA26 + ":81:0.190,0.200,0.879,0.850", (240, 480, 800, 1030), NET, None),
+    # il bordo alto parte da 0,340 e non da 0,320: sopra la fotografia p13 ha
+    # un blocco di testo su fondo bianco, e a 0,320 ne entrava una striscia che
+    # sulla scheda si vedeva come una banda chiara in cima all'immagine
+    ("bolla/modelli/600up", BOLLA26 + ":13:0.095,0.340,0.667,0.880", (240, 480, 800, 1030), NET, None),
+
     # --- schede modello Bolla ---
     ("bolla/modelli/r400",  BOLLA16 + ":52", (240, 480, 800, 1030), GAN, None),
     # V18: stessa scena della fascia di punta, quindi stesso originale vero
