@@ -4,8 +4,7 @@ PERCHE ESISTE. Su questa macchina il login di wrangler e' UNO SOLO, condiviso da
 tutti i progetti, e si sposta fra aziende diverse. Il 2026-11-13 il deploy di
 flysystem e' fallito con "Authentication error [code: 10000]" perche' wrangler
 era loggato su un altro account: il token era valido, semplicemente non vedeva
-il progetto. Lo stesso problema, e la stessa soluzione, stanno gia' in
-Car/_tools/lib/account.mjs.
+il progetto.
 
 COSA FA. Legge le credenziali da un file ignorato da git e le passa a wrangler
 SOLO nell'ambiente del processo figlio. Niente login interattivo, niente token
@@ -25,9 +24,15 @@ Si crea una volta sola dal pannello Cloudflare, con l'account giusto:
 My Profile -> API Tokens -> Create Token -> Create Custom Token,
 permesso Account / Cloudflare Pages / Edit, risorsa quell'account solo.
 
+IL DEPOSITO DELLA MACCHINA. Se la macchina tiene un token per ogni account
+Cloudflare (~/.cf-accounts/accounts.json, voci con name, accountId, apiToken),
+e una voce ha lo stesso accountId del file qui sopra, vale il token di quella
+voce: un solo token per account da tenere aggiornato, e nel file qui basta
+l'accountId. Senza quella voce vale l'apiToken del file, come prima.
+
 Il valore del token non viene mai stampato, ne' da qui ne' da chi usa questo
-modulo. Se serve dire qualcosa su di lui si dice dove sta e che tipo e', mai
-quanto vale.
+modulo, e nemmeno l'id dell'account. Se serve dire qualcosa su di lui si dice
+dove sta e che tipo e', mai quanto vale.
 """
 import json
 import os
@@ -35,6 +40,19 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FILE = ROOT / "_private" / "cloudflare.json"
+DEPOSITO = Path.home() / ".cf-accounts" / "accounts.json"
+
+
+def dal_deposito(acc):
+    """Il token dell'account acc dal deposito della macchina, o None."""
+    try:
+        d = json.loads(DEPOSITO.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError):
+        return None
+    for voce in d.get("accounts") or []:
+        if voce.get("accountId") == acc and len(voce.get("apiToken") or "") >= 20:
+            return voce["apiToken"]
+    return None
 
 ISTRUZIONI = """
   Manca %s
@@ -60,7 +78,7 @@ ISTRUZIONI = """
 
 
 def leggi():
-    """Le credenziali, o None con le istruzioni gia' stampate."""
+    """(accountId, token, da dove viene il token), o None con le istruzioni gia' stampate."""
     if not FILE.exists():
         print(ISTRUZIONI % FILE)
         return None
@@ -73,14 +91,19 @@ def leggi():
         print("  %s non e' JSON valido: %s" % (FILE, e))
         return None
 
-    acc, tok = d.get("accountId", ""), d.get("apiToken", "")
+    acc = d.get("accountId", "")
     if len(acc) != 32 or any(c not in "0123456789abcdef" for c in acc.lower()):
         print("  accountId in %s non e' 32 cifre esadecimali" % FILE)
         return None
+    tok = dal_deposito(acc)
+    if tok:
+        return acc, tok, "dal deposito dei token della macchina"
+    tok = d.get("apiToken", "")
     if not tok or len(tok) < 20:
-        print("  apiToken in %s manca o e' troppo corto per essere un token" % FILE)
+        print("  apiToken in %s manca o e' troppo corto per essere un token," % FILE)
+        print("  e il deposito dei token della macchina non ha questo account")
         return None
-    return acc, tok
+    return acc, tok, "da _private/cloudflare.json"
 
 
 def ambiente():
@@ -93,7 +116,7 @@ def ambiente():
     cred = leggi()
     if cred is None:
         return None
-    acc, tok = cred
+    acc, tok, fonte = cred
     env = dict(os.environ)
     env["CLOUDFLARE_ACCOUNT_ID"] = acc
     env["CLOUDFLARE_API_TOKEN"] = tok
@@ -101,5 +124,5 @@ def ambiente():
     # di wrangler: si toglie dal figlio, cosi' vale solo il token qui sopra
     env.pop("CLOUDFLARE_API_KEY", None)
     env.pop("CLOUDFLARE_EMAIL", None)
-    print("  credenziali da _private/cloudflare.json, account %s...%s" % (acc[:4], acc[-4:]))
+    print("  account fissato da _private/cloudflare.json, token %s" % fonte)
     return env
