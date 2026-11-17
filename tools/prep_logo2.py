@@ -5,7 +5,8 @@ scontorna il fondo bianco con rampa alpha mantenendo i gradienti del logo.
 
 usage: python prep_logo2.py <sheet.jpg> <img-dir>
 outputs: logo-header.png, logo-600.png, favicon-48.png, favicon-192.png,
-         apple-touch-icon.png, favicon.svg (wrapper con PNG embedded)
+         apple-touch-icon.png, favicon.svg (wrapper con PNG embedded),
+         e favicon.ico alla radice del sito (non in <img-dir>)
 """
 import base64
 import sys
@@ -14,6 +15,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 HI, LO = 238, 205  # min-channel: >=HI trasparente, <=LO opaco, in mezzo rampa
+
+# La radice del sito si ricava dalla posizione dello script, come in linkcheck.py:
+# un percorso scritto a mano smette di valere appena il repo cambia cartella.
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def white_key(im: Image.Image) -> Image.Image:
@@ -88,6 +93,15 @@ def main(src: Path, img_dir: Path):
            f'href="data:image/png;base64,{b64}"/></svg>')
     (img_dir / "favicon.svg").write_text(svg, encoding="utf-8")
     print(f"  favicon.svg = {(img_dir / 'favicon.svg').stat().st_size / 1024:.1f} KB")
+
+    # favicon.ico alla radice: browser e crawler chiedono /favicon.ico qualunque
+    # cosa dica <link rel="icon">, e senza il file il sito rispondeva 404.
+    # Fotogrammi 16, 32 e 48 ridotti dal tile a 192, perche' l'angolo arrotondato
+    # resti morbido anche a 16: una maschera disegnata a 16 px viene a scalini.
+    # pubblica.py lo ammette nella lista dei file da pubblicare.
+    ico = ROOT / "favicon.ico"
+    Image.open(img_dir / "favicon-192.png").save(ico, sizes=[(16, 16), (32, 32), (48, 48)])
+    print(f"  favicon.ico = 16, 32, 48 ({ico.stat().st_size / 1024:.1f} KB)")
 
 
 if __name__ == "__main__":

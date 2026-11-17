@@ -41,7 +41,7 @@ DIST = Path(os.environ.get("TEMP", "/tmp")) / "flysystem-dist"
 # Tutto e solo cio che deve stare online. Niente jolly su cartelle di lavoro.
 PAGINE = ["index.html", "bolla.html", "cataloghi.html", "contatti.html",
           "privacy.html", "404.html"]
-FILE = ["robots.txt", "sitemap.xml", "_headers", "_redirects", ".nojekyll"]
+FILE = ["robots.txt", "sitemap.xml", "favicon.ico", "_headers", "_redirects", ".nojekyll"]
 CARTELLE = ["assets"]
 
 # Se uno di questi finisse in _dist, la pubblicazione va fermata.
