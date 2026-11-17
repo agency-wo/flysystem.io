@@ -172,7 +172,8 @@ JOBS = [
     ("bolla/modelli/r1000", "file:_sorgenti/bobo-evento.jpeg", (240, 480, 800, 1040), NET, None),
     ("bolla/modelli/g400",  BOLLA16 + ":56", (240, 480, 800, 1030), GAN, None),
     ("bolla/modelli/g500",  BOLLA16 + ":51", (240, 480, 800, 1030), GAN, None),
-    ("bolla/modelli/suite", BOLLA16 + ":61", (240, 480, 800, 1030), GAN, None),
+    # bolla/modelli/suite stava qui (BOLLA16 p61). Tolta il 2026-11-17 col modello a esagoni
+    # che mostrava: non e' piu' nella gamma del sito, su richiesta del cliente.
 
     # --- fotografie del cliente: il .jpeg E gia l'originale ---
     # bolla/glamping-inverno stava qui, con sorgente _sorgenti/fly1.jpeg. Tolta:

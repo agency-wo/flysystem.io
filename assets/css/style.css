@@ -2622,21 +2622,7 @@
     font-size: 1rem;
   }
 
-  /* ---- le bolle collegate (suite con bagno) ---- */
-
-  .collegate__foto img {
-    inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 5 / 6;
-    object-fit: cover;
-    display: block;
-  }
-
-  .collegate__dati {
-    border-top: 1px solid var(--rule);
-  }
-
-  /* ---- quattro garanzie ---- */
+  /* ---- perche' regge ---- */
 
   .garanzie {
     list-style: none;

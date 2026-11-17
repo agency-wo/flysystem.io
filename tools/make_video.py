@@ -11,7 +11,7 @@ Perche questi parametri (verificati in WebKit 26.5 e leggendo i box MP4):
   frame, cioe 3 soli keyframe in 24 s, con uno scatto a ogni ripartenza del loop.
 
 output:
-- bolla-drone.mp4    loop notturno delle bolle, muto (ruotato: transpose=2)
+- (bolla-drone.mp4 non piu: tolto dal sito il 2026-11-17 col modello a esagoni)
 - pergole-loop.mp4   taglio silenzioso di sole inquadrature di prodotto
 - pergole-promo.mp4  versione integrale narrata, su richiesta
 
@@ -141,9 +141,8 @@ def main(src: Path, frames: Path):
     VID.mkdir(exist_ok=True)
     frames.mkdir(parents=True, exist_ok=True)
 
-    drone = VID / "bolla-drone.mp4"
-    run(["-i", str(src / "flyvid1.mp4"), "-vf", "transpose=2", "-an",
-         *IOS_SAFE, "-crf", "23", str(drone)])
+    # bolla-drone.mp4 (da flyvid1.mp4) non si costruisce piu': mostrava il modello a esagoni,
+    # tolto dal sito il 2026-11-17 su richiesta del cliente.
 
     loop = VID / "pergole-loop.mp4"
     build_loop(src / "flyvid.mp4", loop)
@@ -157,7 +156,7 @@ def main(src: Path, frames: Path):
     for t in ("1", "3", "6", "9"):
         run(["-ss", t, "-i", str(loop), "-frames:v", "1", str(frames / f"loop-{t}s.png")])
 
-    print(json.dumps([probe(p) for p in (drone, loop, promo)], indent=1))
+    print(json.dumps([probe(p) for p in (loop, promo)], indent=1))
 
 
 if __name__ == "__main__":
