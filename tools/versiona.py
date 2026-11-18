@@ -26,10 +26,18 @@ l'impronta solo sul primo dei due farebbe scaricare a ogni visitatore lo stesso
 font due volte, una per indirizzo. Sono anche gli unici file qui che non
 cambiano mai.
 
-Nemmeno le immagini, per ora: le srcset sono lunghissime e le fotografie qui si
-sostituiscono cambiando nome. Se un giorno si rimpiazza una foto tenendo lo
-stesso nome, quella restera vecchia in cache per 4 ore, e allora questo script
-va esteso.
+IMMAGINI, VIDEO E PDF SI VERSIONANO DAL 18 NOVEMBRE 2026. Prima qui c'era scritto
+che le foto si sostituiscono cambiando nome; non e successo. Il 13 novembre la
+copertina del catalogo Bolla e stata rimpiazzata con lo stesso nome
+(c-bolla-960.avif e le sue sorelle), con `max-age=2592000`: chi aveva gia visto
+la pagina continuava a vedere la copertina vecchia, con le cupole a esagoni che
+il cliente aveva fatto togliere, e il cliente lo ha visto sul telefono ("Akoma
+ska ik kjo", ancora non e andata via). La stessa trappola era gia scritta in
+_headers dal 3 settembre. Una trappola che morde due volte diventa un
+meccanismo: ogni indirizzo relativo sotto assets/img, assets/video e assets/pdf
+negli attributi src, href, srcset e poster prende l'impronta del suo file.
+Restano senza impronta gli indirizzi assoluti (og:image, JSON-LD), che leggono
+i crawler e non i browser dei visitatori.
 
     python tools/versiona.py            riscrive le pagine
     python tools/versiona.py --check    esce con 1 se un'impronta e vecchia
@@ -69,16 +77,38 @@ def riscrivi(testo, asset, imp):
     return schema.subn(lambda m: '%s="%s?v=%s"' % (m.group(1), asset, imp), testo)
 
 
+MEDIA_ATTR = re.compile(r'\b(src|href|srcset|poster)="([^"]*)"')
+MEDIA_URL = re.compile(r'(?<![\w/.:-])(assets/(?:img|video|pdf)/[^"\'\s?,)<>]+)(?:\?v=[0-9a-f]{8})?')
+
+
+def riscrivi_media(testo, cache, mancanti):
+    """Ogni indirizzo relativo di un'immagine, un video o un PDF dentro src, href, srcset e poster prende
+    l'impronta del suo file, anche piu indirizzi nella stessa srcset. Un file che non esiste resta com'e e
+    viene segnalato: un'impronta inventata nasconderebbe un collegamento rotto."""
+    def url(m):
+        percorso = m.group(1)
+        if percorso not in cache:
+            cache[percorso] = impronta(percorso) if os.path.isfile(os.path.join(RADICE, percorso)) else None
+        if cache[percorso] is None:
+            mancanti.add(percorso)
+            return m.group(0)
+        return "%s?v=%s" % (percorso, cache[percorso])
+
+    def attr(m):
+        return '%s="%s"' % (m.group(1), MEDIA_URL.sub(url, m.group(2)))
+    return MEDIA_ATTR.sub(attr, testo)
+
+
 def main(argv):
     check = "--check" in argv
     if "--hook" in argv:
         return installa_hook()
 
     imps = {a: impronta(a) for a in ASSETS}
-    vecchie, toccate = [], 0
+    vecchie, toccate, cache, mancanti = [], 0, {}, set()
     for p in pagine():
         testo = io.open(p, encoding="utf-8").read()
-        nuovo = testo
+        nuovo = riscrivi_media(testo, cache, mancanti)
         for a in ASSETS:
             nuovo, n = riscrivi(nuovo, a, imps[a])
             if not n:
@@ -91,6 +121,9 @@ def main(argv):
 
     for a in ASSETS:
         print("  %-22s %s" % (a, imps[a]))
+    print("  %d immagini, video e PDF con impronta" % sum(1 for v in cache.values() if v))
+    if mancanti:
+        print("  CITATI MA ASSENTI: %s" % ", ".join(sorted(mancanti)))
     if check:
         if vecchie:
             print("\n  IMPRONTA VECCHIA in: %s" % ", ".join(vecchie))
