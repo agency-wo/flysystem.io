@@ -36,9 +36,12 @@ const ECCEZIONI = {
   "img/outdoor/montaggio": "foto del cliente perg2.jpeg, 1280 px",
   "img/home/hero-edificio": "stock 1920 px, il piu grande del sito",
   "img/cataloghi/lead": "master perduto, nessun originale piu grande nei PDF (cercato)",
-  // il catalogo Bolla ha raster incorporati da 344x543 px, i due aerei 691x517:
-  // nessuna larghezza generata puo aggiungere dettaglio che non esiste
-  "img/bolla/": "catalogo Bolla, sorgente 344-691 px: vedi la nota in memoria",
+  // Dal 2026-11-18 vale solo per le due fotografie Bolla che vengono ancora dal
+  // catalogo (raster incorporati da 344x543 px a circa 900 px a pagina): le
+  // altre sono fotografie dei clienti a risoluzione vera e il gate le misura.
+  "img/bolla/camera-sera": "catalogo Bolla, nessuna camera in cupola piu grande fra le foto arrivate",
+  "img/bolla/modelli/": "catalogo Bolla, una fotografia per misura: nessuna foto arrivata dice la misura",
+  "img/bolla/montagna-terrazza": "foto del cliente via WhatsApp, 1152 px: e tutto quello che esiste; ingrandita col modello faceva chiazze",
 };
 
 function larghezzaReale(rel) {
@@ -88,6 +91,7 @@ const casi = [
 
 const browser = await chromium.launch({ channel: "msedge", headless: true });
 const tutte = [];
+let illeggibili = 0;
 
 for (const { w, dpr, nome } of casi) {
   for (const f of pagine) {
@@ -110,7 +114,10 @@ for (const { w, dpr, nome } of casi) {
       [...document.images]
         .filter((i) => i.offsetWidth > 40)
         .map((i) => ({
-          src: ((i.currentSrc || i.src).split("/assets/")[1] || ""),
+          // senza query: dal 2026-11-18 ogni immagine porta l'impronta ?v= di
+          // versiona.py, il file su disco non si trovava piu e il gate
+          // controllava zero immagini dicendo che andava tutto bene
+          src: ((i.currentSrc || i.src).split("/assets/")[1] || "").split("?")[0],
           box: i.offsetWidth,
         }))
     );
@@ -119,7 +126,12 @@ for (const { w, dpr, nome } of casi) {
     for (const im of imgs) {
       if (!im.src) continue;
       const reale = larghezzaReale(im.src);
-      if (!reale) continue;
+      if (!reale) {
+        // un file citato e non letto e un buco del gate, non un'immagine buona
+        console.log(`  NON LETTA: ${f} ${im.src}`);
+        illeggibili++;
+        continue;
+      }
       const serve = Math.round(im.box * dpr);
       tutte.push({ caso: nome, w, dpr, pagina: f, ...im, reale, x: +(serve / reale).toFixed(2), serve });
     }
@@ -156,5 +168,9 @@ if (process.argv.includes("--json")) {
   console.log(`\n  immagini controllate: ${righe.length}`);
   console.log(`  sopra soglia per errore nostro: ${rotti}`);
   console.log(`  sopra soglia per limite di sorgente (dichiarate): ${scusati}`);
-  process.exitCode = rotti ? 1 : 0;
+  console.log(`  citate ma non lette: ${illeggibili}`);
+  // Zero immagini controllate non e un successo: e il gate che non vede. E
+  // successo davvero, dal 18 al 19 novembre 2026, per l'impronta ?v=.
+  if (!righe.length) console.log("  NESSUNA IMMAGINE CONTROLLATA: il gate non sta misurando niente");
+  process.exitCode = rotti || illeggibili || !righe.length ? 1 : 0;
 }

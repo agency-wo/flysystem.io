@@ -16,6 +16,7 @@ Catena:
 uso:
   python tools/enhance.py <cartella/nome> pdf:<catalogo>:<xref> [larghezze] [modello]
   python tools/enhance.py <cartella/nome> file:<_sorgenti/fly8.jpeg> [larghezze] [modello]
+  python tools/enhance.py <cartella/nome> file:<_sorgenti/fly8.jpeg>:<l,t,r,b> [larghezze] [modello]
   python tools/enhance.py <cartella/nome> pagina:<catalogo>:<n>:<l,t,r,b> [larghezze] [modello]
 
   modello: realesrgan-x4plus (generativo, default) | realesrnet-x4plus (fedele)
@@ -35,6 +36,7 @@ se. Le altre due si riagganciano all'inquadratura di cio che il sito serve
 adesso, quindi pretendono che quello slug esista gia.
 """
 import io
+import re
 import shutil
 import subprocess
 import sys
@@ -108,24 +110,63 @@ JOBS = [
     # capitolo: in home c'era il telo e non il prodotto di cui parla la pagina.
     # Se ne e' accorto il cliente, non noi. Le pagine buone per la cupola
     # trasparente sono Ho.Re.Ca p26-33, Glamping p34-45, Contesti p64-83.
-    ("bolla/cena-giardino",   BOLLA26 + ":30:0.163,0.225,0.837,0.940", (480, 960, 996), NET, None),
-    ("bolla/terrazza-lago",   BOLLA26 + ":76:0.010,0.330,0.990,0.842", (480, 960, 1451), NET, None),
-    ("bolla/mare-tramonto",   BOLLA26 + ":31:0.135,0.140,0.865,0.935", (480, 960, 1376), NET, None),
-    ("bolla/collina-sera",    BOLLA26 + ":40:0.158,0.170,0.842,0.935", (480, 960, 1373), NET, None),
+    # --- Bolla, fotografie dei clienti a risoluzione vera (2026-11-18) ---
+    # MarketingPro: le foto Bolla sul sito "jane me rezolucion sh te keq" (sono
+    # a risoluzione molto bassa), e ha mandato le sue. Le pagine del catalogo
+    # posano le fotografie fra 73 e 117 dpi, cioe circa 600-800 px di dettaglio
+    # vero per riquadro; queste ne hanno da 1,6 a 1,8 volte tanto. Stanno in
+    # _sorgenti/bolla-2026-11-18/ col nome con cui sono arrivate.
+    #
+    # Rimaste FUORI, e perche:
+    #   - le cinque PNG: portano le credenziali di contenuto C2PA di OpenAI
+    #     (gpt-image, "trainedAlgorithmicMedia"), cioe sono scene generate da
+    #     ChatGPT, non installazioni. Il catalogo stesso dichiara di non avere
+    #     immagini generate;
+    #   - 425307522 e IMG_9084: l'insegna del locale e scritta nella foto;
+    #   - le altre: piu piccole di cio che sostituirebbero (camera-sera resta
+    #     com'e per questo), oppure doppioni di una scena gia scelta.
+    #
+    # I riquadri tengono fuori l'insegna del locale (408801922, sopra lo 0,30)
+    # e il profilo social scritto sul cielo (WhatsApp 2023-01-05, sopra lo 0,16).
+    # MODELLO, una per una, guardando il risultato a 2x: il fedele va bene sulle
+    # esportazioni pulite (cena-giardino, dehors-luci, tavolo-acqua, prato-luci),
+    # ma su vialetto-sera, arco-terrazza e montagna-terrazza appiattiva neve,
+    # cielo e lastricato scuro in chiazze di colore, che nella sorgente a 100%
+    # non ci sono. Quelle tre restano ai loro pixel (NESSUNO), alla larghezza
+    # vera; nitidezza.mjs le dichiara dove la sorgente non basta.
+    # Rapporti identici a quelli delle immagini che sostituiscono: il markup
+    # cambia nome e misure, l'impaginazione no.
+    ("bolla/cena-giardino",
+     "file:_sorgenti/bolla-2026-11-18/408978078_728239699335788_2685217247661461914_n.jpg",
+     (480, 960, 1440), NET, None),
+    ("bolla/dehors-luci",
+     "file:_sorgenti/bolla-2026-11-18/331615070_173765468740202_9006138138435975162_n.jpg:0,0.17,1,0.90776",
+     (480, 960, 1440, 2160), NET, None),
+    ("bolla/vialetto-sera",
+     "file:_sorgenti/bolla-2026-11-18/408801922_728239939335764_1817231838721865457_n.jpg:0.05208,0.30,1,1",
+     (480, 960, 1440), NESSUNO, None),
+    ("bolla/tavolo-acqua",
+     "file:_sorgenti/bolla-2026-11-18/350258024_801438638255798_1224737883071309290_n.jpg:0.095,0,0.74491,1",
+     (480, 960, 1380), NET, None),
+    ("bolla/arco-terrazza",
+     "file:_sorgenti/bolla-2026-11-18/343531708_717408910182590_630129937553763578_n.jpg:0.33,0,0.96144,1",
+     (480, 960, 1380), NESSUNO, None),
+    ("bolla/montagna-terrazza",
+     "file:_sorgenti/bolla-2026-11-18/WhatsApp Image 2023-01-05 at 18.04.40.jpeg:0,0.16,1,0.85272",
+     (480, 960, 1440), NESSUNO, None),
+    ("bolla/prato-luci",
+     "file:_sorgenti/bolla-2026-11-18/350122082_1673711896458651_2071693277835759282_n.jpg:0,0.08,1,0.81881",
+     (480, 960), NET, None),
 
-    # La fascia di apertura, cioe la PRIMA fotografia della pagina Bolla.
-    # Sostituisce cupola-luci su richiesta del cliente, che di quella scena non
-    # era convinto ("Ket e zevendeson dot"), mentre il resto gli andava bene.
-    # p78 e dal capitolo Contesti: due cupole accese all'ora blu su un dehors,
-    # che e esattamente cio che dice la didascalia. Nessun cartellino "Credit:"
-    # e nessuna faccia riconoscibile, che e il motivo per cui p67 e p70, pure
-    # belle, sono rimaste fuori.
-    ("bolla/dehors-sera", BOLLA26 + ":78:0.005,0.280,0.995,0.797", (480, 960, 1440, 2160), NET, None),
+    # camera-sera NON ha una voce qui: nessuna fotografia arrivata il 2026-11-18
+    # mostra una camera in cupola piu grande di quella che c'e.
 
-    # camera-sera e neve-tavola NON hanno una voce qui: tengono la fotografia
-    # della passata precedente e hanno solo cambiato nome, perche il contenuto
-    # era gia cambiato e l'indirizzo no. Rigenerarle le cambierebbe una seconda
-    # volta senza motivo.
+    # La copertina della scheda Bolla e Capsula su /cataloghi: la fotografia di
+    # copertina del catalogo 2026 (raster 826x1936 di p1, estratto tale e quale),
+    # al rapporto 1:1,375 della serie di make_covers2.py, senza testo.
+    ("cataloghi/covers/c-bolla",
+     "file:_sorgenti/bolla-2026-11-18/copertina-catalogo-2026.jpeg:0,0.32,1,0.90672",
+     (480, 960, 1440), NET, None),
 
     # --- schede modello della gamma 2026: fotografie, non disegni ---
     #
@@ -291,7 +332,27 @@ def originale(spec):
         l, t, r, b = [float(x) for x in riquadro.split(",")]
         return im.crop((round(l * im.width), round(t * im.height),
                         round(r * im.width), round(b * im.height)))
-    return Image.open(ROOT / resto).convert("RGB")
+    percorso, riquadro = file_e_riquadro(resto)
+    im = Image.open(ROOT / percorso).convert("RGB")
+    if riquadro is None:
+        return im
+    l, t, r, b = riquadro
+    return im.crop((round(l * im.width), round(t * im.height),
+                    round(r * im.width), round(b * im.height)))
+
+
+def file_e_riquadro(resto):
+    """`file:<percorso>` oppure `file:<percorso>:<l,t,r,b>`.
+
+    Il riquadro facoltativo esiste dal 2026-11-18, quando sono arrivate le
+    fotografie Bolla dei clienti a risoluzione vera: scene NUOVE, quindi senza
+    uno slug gia sul sito da cui ricavare il taglio. Come per `pagina:`, chi
+    porta il riquadro puo generare uno slug nuovo.
+    """
+    testa, _, coda = resto.rpartition(":")
+    if testa and re.fullmatch(r"[0-9.]+(,[0-9.]+){3}", coda):
+        return testa, [float(x) for x in coda.split(",")]
+    return resto, None
 
 
 def ingrandisci(im, modello, scala=4):
@@ -333,7 +394,8 @@ def main(nome, spec, larghezze, modello, corr=None):
     # e decisa e non va cercata. E l'unico caso in cui uno slug NUOVO si puo
     # generare: per tutti gli altri serve una misura gia sul sito da cui
     # ricavare il taglio.
-    esplicito = spec.startswith("pagina:")
+    esplicito = spec.startswith("pagina:") or (
+        spec.startswith("file:") and file_e_riquadro(spec[5:])[1] is not None)
     if not attuali and not esplicito:
         raise SystemExit(f"nessuna immagine attuale per {nome}: non so quale ritaglio tenere")
     riferimento = Image.open(attuali[-1]).convert("RGB") if attuali else None

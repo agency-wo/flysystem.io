@@ -22,6 +22,7 @@ import pillow_avif  # noqa: F401
 from PIL import Image
 
 TOLLERANZA = 0.012  # 1,2% sul rapporto: copre l'arrotondamento delle misure
+IMPRONTA = re.compile(r"\?v=[0-9a-f]{8}")
 
 # Scarto massimo fra due misure della stessa fotografia, confrontate a 32x32 in
 # scala di grigi. Serve perche il controllo sul rapporto NON basta: in V18 la
@@ -121,9 +122,15 @@ def main(pulisci):
         s = open(f, encoding="utf-8").read()
         originale = s
 
+        # Le impronte ?v= di versiona.py (dal 2026-11-18 anche sulle immagini)
+        # vanno TOLTE prima di leggere gli indirizzi. Senza, nessuna srcset
+        # combaciava, nessun file risultava citato e il conteggio degli orfani
+        # diceva 411, cioe quasi ogni immagine del sito: un --pulisci le avrebbe
+        # cancellate tutte. Si confronta senza impronta e, se non cambia niente,
+        # si lascia l'attributo com'e, impronte comprese.
         def rifai(m):
             nonlocal cambiati
-            ss = m.group(1)
+            ss = IMPRONTA.sub("", m.group(1))
             cand = re.findall(r"(\S+?)-(\d+)\.(avif|webp|jpg)\s+\d+w", ss)
             if not cand:
                 return m.group(0)
@@ -134,8 +141,9 @@ def main(pulisci):
             nuovo = ", ".join(f"{stem}-{w}.{ext} {w}w" for w, _, _ in buone)
             for w, _, p in buone:
                 citati.add(os.path.normpath(p))
-            if nuovo != ss.strip():
-                cambiati += 1
+            if nuovo == ss.strip():
+                return m.group(0)
+            cambiati += 1
             return f'srcset="{nuovo}"'
 
         s = re.sub(r'srcset="([^"]+)"', rifai, s)
@@ -155,11 +163,11 @@ def main(pulisci):
             print(f"    ripiego aggiornato: {os.path.basename(p)} -> {os.path.basename(scelto)}")
             return f'src="{scelto.replace(os.sep, "/")}"'
 
-        s = re.sub(r'src="(assets/img/[^"]+\.jpg)"', ripiego, s)
+        s = re.sub(r'src="(assets/img/[^"?]+\.jpg)(?:\?v=[0-9a-f]{8})?"', ripiego, s)
 
         if s != originale:
             open(f, "w", encoding="utf-8").write(s)
-            print(f"  {f}: srcset allineate")
+            print(f"  {f}: srcset allineate (esegui python tools/versiona.py per le impronte)")
 
     # orfani: misure su disco che nessuna pagina cita
     orfani = []
